@@ -2,7 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <RootNamespace>Endarion.CasaXpsUtilities.Core</RootNamespace>
+    <RootNamespace>Silkfire.CasaXpsUtilities.Core</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NodaTime" Version="2.4.5" />
+  </ItemGroup>
 
 </Project>
