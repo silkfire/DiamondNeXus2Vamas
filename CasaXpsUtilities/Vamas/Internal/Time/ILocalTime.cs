@@ -1,4 +1,4 @@
-﻿namespace Silkfire.CasaXpsUtilities.Core.Models.Properties
+﻿namespace CasaXpsUtilities.Vamas.Internal.Time
 {
     using System;
 

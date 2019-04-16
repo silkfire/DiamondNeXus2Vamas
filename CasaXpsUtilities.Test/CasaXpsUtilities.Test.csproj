@@ -2,14 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-
+    <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+    
     <IsPackable>false</IsPackable>
 
-    <RootNamespace>Silkfire.CasaXpsUtilities.Test</RootNamespace>
+    <RootNamespace>CasaXpsUtilities.Test</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FakeItEasy" Version="5.1.0" />
+    <PackageReference Include="FakeItEasy" Version="5.1.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
@@ -19,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CasaXpsUtilities.Core\CasaXpsUtilities.Core.csproj" />
+    <ProjectReference Include="..\CasaXpsUtilities\CasaXpsUtilities.csproj" />
   </ItemGroup>
 
 </Project>

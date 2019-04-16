@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <RootNamespace>Silkfire.CasaXpsUtilities.Core</RootNamespace>
+    <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+    <RootNamespace>CasaXpsUtilities</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
