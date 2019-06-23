@@ -1,63 +1,62 @@
 ﻿namespace CasaXpsUtilities.DiamondNeXus2Vamas
 {
-    using FluentResults;
-    using Optional;
-    using Pastel;
-
     using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Drawing;
-    using System.Globalization;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Vamas.Internal.Time;
-    using Xps.Synchrotron.IO;
+    using Internal;
+    using Pastel;
+    using Xps.Synchrotron.Diamond.Scans.DomainModels;
+    using Xps.Synchrotron.Diamond.Scans.Dtos;
+    using Xps.Synchrotron.Diamond.Scans.IO;
+
 
     public class App
     {
-        public static void Main(string[] args)
+        public static void Main()
         {
-            const int number = 18;
+            //var scan = Scan.Load(@"C:\Users\Gabriel\Documents\Visual Studio 2017\Projects\2018\CasaXpsUtilities\test-Oct\i09-144646.nxs");
 
-            var validations = new List<Option<int, Error>>
+
+
+            var reader = Startup.Container.Locate<IScanFileReader>();
+
+            var scanResult = reader.Read(@"C:\Users\Gabriel\Documents\Visual Studio 2017\Projects\2018\CasaXpsUtilities\test-Oct\i09-144646.nxs");
+
+            var scanConverter = Startup.Container.Locate<IDtoDomainModelConverter<ScanDto, Scan>>();
+
+            var scan = scanResult.FlatMap(s => scanConverter.Convert(s));
+
+
+            foreach (var (value, _) in scan)
             {
-                number.SomeWhen(n =>  n > 20,      new Error("Value must be above 20, but was equal to or less.")),
-                number.SomeWhen(n =>  n < 77,      new Error("Value must be below 77, but was equal to or greater.")),
-                number.SomeWhen(n => (n & 1) == 1, new Error("Value must be odd.")),
-            };
+                foreach (var region in value.Regions)
+                {
+                    Console.WriteLine(region.Name.Pastel(Color.Aquamarine));
+                }
+            }
 
 
-            var a = validations.Aggregate((v1, v2) => v1.FlatMap(_ => v2));
+            //ISpectraReader spectraReader = null;
 
-            a.Match(n => Console.WriteLine($"Validation passed for number {n}"), e => Console.WriteLine($"{$"Validation failed for {{{nameof(number)}: {number}}} => ".Pastel("FF3D00")} {e.Message}\n"));
+            //Task.Run(() => spectraReader = Startup.Container.Locate<ISpectraReader>());
 
+            //Console.WriteLine("Please provide the location of the definitions file:");
 
+            //var definitionsFilepath = Console.ReadLine();
 
+            //var sw = new Stopwatch();
+            //sw.Start();
 
+            //var localTimeFactory = Startup.Container.Locate<ILocalTimeFactory<ILocalTime>>();
 
-            ISpectraReader spectraReader = null;
+            //var ukLocalTime = localTimeFactory.Create(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+            //var ukLocalTime2 = localTimeFactory.Create(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
-            Task.Run(() => spectraReader = Startup.Container.Locate<ISpectraReader>());
+            //sw.Stop();
 
-            Console.WriteLine("Please provide the location of the definitions file:");
+            //Console.WriteLine($"{(sw.Elapsed.TotalMilliseconds / 1000).ToString("0.00000000", CultureInfo.InvariantCulture).Pastel("FFCA00")}s");
 
-            var definitionsFilepath = Console.ReadLine();
-
-            var sw = new Stopwatch();
-            sw.Start();
-
-            var localTimeFactory = Startup.Container.Locate<ILocalTimeFactory<ILocalTime>>();
-
-            var ukLocalTime = localTimeFactory.Create(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-            var ukLocalTime2 = localTimeFactory.Create(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-
-            sw.Stop();
-
-            Console.WriteLine($"{(sw.Elapsed.TotalMilliseconds / 1000).ToString("0.00000000", CultureInfo.InvariantCulture).Pastel("FFCA00")}s");
-
-            Console.WriteLine(ukLocalTime);
-            Console.WriteLine(ukLocalTime2);
+            //Console.WriteLine(ukLocalTime);
+            //Console.WriteLine(ukLocalTime2);
 
 
             Console.WriteLine("\nPress any key to continue.");

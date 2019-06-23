@@ -10,4 +10,13 @@
     <PackageReference Include="NodaTime" Version="2.4.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\Visual Studio 2019\Projects\Upshot\src\Upshot\Upshot.csproj" />
+    <ProjectReference Include="..\..\..\2018\HdfLite\HdfLite.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Xps\Synchrotron\IO\Diamond\" />
+  </ItemGroup>
+
 </Project>

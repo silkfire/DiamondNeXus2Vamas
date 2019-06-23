@@ -10,12 +10,12 @@ namespace CasaXpsUtilities.Test.Vamas.Internal.Time
     using System.Collections.Generic;
 
 
-    public class LocalTimeTests
+    public static class LocalTimeTests
     {
         private const string UnixTimeSecondsKeyEpoch = "epoch";
         private const string UnixTimeSecondsKeyNow   = "now";
 
-        private static Dictionary<string, long> _unixTimeSecondsUtc = new Dictionary<string, long>
+        private static readonly Dictionary<string, long> _unixTimeSecondsUtc = new Dictionary<string, long>
         {
             [UnixTimeSecondsKeyEpoch] = 0L,
             [UnixTimeSecondsKeyNow]   = DateTimeOffset.Now.ToUnixTimeSeconds()

@@ -1,8 +1,5 @@
 ﻿namespace CasaXpsUtilities.Vamas
 {
-    using Xps.Synchrotron.IO;
-
-
     public class Block
     {
 
