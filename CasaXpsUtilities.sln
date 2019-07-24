@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CasaXpsUtilities.Test", "Ca
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HdfLite", "..\..\2018\HdfLite\HdfLite.csproj", "{F13E513C-CFBB-462E-89F8-80A933871CAB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Upshot", "..\..\..\..\Visual Studio 2019\Projects\Upshot\src\Upshot\Upshot.csproj", "{FDCC1D3E-47EE-463A-8FC4-85398F963D80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ultimately", "..\..\..\2019\Ultimately\src\Ultimately.csproj", "{378EF5A0-A9F0-4E7D-AC61-A176CD8568CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{F13E513C-CFBB-462E-89F8-80A933871CAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F13E513C-CFBB-462E-89F8-80A933871CAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F13E513C-CFBB-462E-89F8-80A933871CAB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FDCC1D3E-47EE-463A-8FC4-85398F963D80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FDCC1D3E-47EE-463A-8FC4-85398F963D80}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FDCC1D3E-47EE-463A-8FC4-85398F963D80}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FDCC1D3E-47EE-463A-8FC4-85398F963D80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{378EF5A0-A9F0-4E7D-AC61-A176CD8568CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{378EF5A0-A9F0-4E7D-AC61-A176CD8568CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{378EF5A0-A9F0-4E7D-AC61-A176CD8568CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{378EF5A0-A9F0-4E7D-AC61-A176CD8568CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

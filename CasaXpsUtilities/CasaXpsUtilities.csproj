@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NodaTime" Version="2.4.5" />
+    <PackageReference Include="NodaTime" Version="2.4.6" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\Visual Studio 2019\Projects\Upshot\src\Upshot\Upshot.csproj" />
+    <ProjectReference Include="..\..\..\..\2019\Ultimately\src\Ultimately.csproj" />
     <ProjectReference Include="..\..\..\2018\HdfLite\HdfLite.csproj" />
   </ItemGroup>
 

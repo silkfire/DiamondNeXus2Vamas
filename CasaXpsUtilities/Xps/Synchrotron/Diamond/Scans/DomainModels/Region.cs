@@ -1,7 +1,7 @@
 ﻿namespace CasaXpsUtilities.Xps.Synchrotron.Diamond.Scans.DomainModels
 {
-    using Upshot;
-    using Upshot.Collections;
+    using Ultimately;
+    using Ultimately.Collections;
 
     using System.Collections.Generic;
 
@@ -25,7 +25,7 @@
             };
 
             return validationRules.Reduce()
-                                  .FlatMap(() => new Region(name));
+                                  .Map(() => new Region(name));
         }
 
 

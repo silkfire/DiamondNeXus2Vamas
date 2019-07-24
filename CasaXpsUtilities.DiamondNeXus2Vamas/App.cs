@@ -4,6 +4,7 @@
     using System.Drawing;
     using Internal;
     using Pastel;
+    using Services.Converters.DiamondScan2Vamas.DomainModels;
     using Xps.Synchrotron.Diamond.Scans.DomainModels;
     using Xps.Synchrotron.Diamond.Scans.Dtos;
     using Xps.Synchrotron.Diamond.Scans.IO;
@@ -13,20 +14,28 @@
     {
         public static void Main()
         {
+            //var scanFile = ScanFile.Create(@"C:\Users\Gabriel\Documents\Visual Studio 2017\Projects\2018\CasaXpsUtilities\test-Oct\i09-144646.nxs");
+
+
+
+
+
+            //Environment.Exit(0);
+
             //var scan = Scan.Load(@"C:\Users\Gabriel\Documents\Visual Studio 2017\Projects\2018\CasaXpsUtilities\test-Oct\i09-144646.nxs");
 
 
 
             var reader = Startup.Container.Locate<IScanFileReader>();
 
-            var scanResult = reader.Read(@"C:\Users\Gabriel\Documents\Visual Studio 2017\Projects\2018\CasaXpsUtilities\test-Oct\i09-144646.nxs");
+            var scanResult = reader.Read(@"D:\Projects\2017\2018\CasaXpsUtilities\test-Oct\i09-144646.nxs");
 
-            var scanConverter = Startup.Container.Locate<IDtoDomainModelConverter<ScanDto, Scan>>();
+            //var scanConverter = Startup.Container.Locate<IDtoDomainModelConverter<ScanDto, Scan>>();
 
-            var scan = scanResult.FlatMap(s => scanConverter.Convert(s));
+            //var scan = scanResult.FlatMap(s => scanConverter.Convert(s));
 
 
-            foreach (var (value, _) in scan)
+            foreach (var (value, _) in scanResult)
             {
                 foreach (var region in value.Regions)
                 {

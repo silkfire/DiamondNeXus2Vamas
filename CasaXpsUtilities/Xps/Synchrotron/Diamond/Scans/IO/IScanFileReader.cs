@@ -1,12 +1,12 @@
 ﻿namespace CasaXpsUtilities.Xps.Synchrotron.Diamond.Scans.IO
 {
-    using Dtos;
+    using DomainModels;
 
-    using Upshot;
+    using Ultimately;
 
 
     public interface IScanFileReader
     {
-        Option<ScanDto> Read(string filepath);
+        Option<Scan> Read(string filepath);
     }
 }

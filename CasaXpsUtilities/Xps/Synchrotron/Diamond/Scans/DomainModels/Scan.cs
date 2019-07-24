@@ -1,10 +1,9 @@
 ﻿namespace CasaXpsUtilities.Xps.Synchrotron.Diamond.Scans.DomainModels
 {
-    using Upshot;
-    using Upshot.Collections;
+    using Ultimately;
+    using Ultimately.Collections;
 
     using System.Collections.Generic;
-    using System.IO;
 
 
     /// <summary>
@@ -15,41 +14,39 @@
         private readonly List<Region> _regions;
 
         /// <summary>
-        /// The complete filepath of the scan file.
-        /// </summary>
-        public string Filepath { get; }
-
-        /// <summary>
         /// The sequence number of the scan.
         /// </summary>
-        public string Number { get; }
+        public uint Number => File.Number;
+
+        /// <summary>
+        /// Holds information about the physical scan file on disk.
+        /// </summary>
+        public ScanFile File { get; set; }
 
         public IReadOnlyList<Region> Regions => _regions;
 
 
-        private Scan(string filepath, string number, List<Region> regions)
+        private Scan(ScanFile file, List<Region> regions)
         {
-            Filepath = filepath;
-            Number = number;
+            File = file;
 
             _regions = regions;
         }
 
 
-        public static Option<Scan> Create(string filepath, string number, List<Region> regions)
+        public static Option<Scan> Create(ScanFile file, List<Region> regions)
         {
             var validationRules = new List<LazyOption>
             {
-                Optional.Lazy(() => !string.IsNullOrWhiteSpace(filepath), "Filepath to the scan cannot be empty"),
-                Optional.Lazy(() => !string.IsNullOrWhiteSpace(number), "The scan number cannot be empty"),
+                Optional.Lazy(() => file != null, "Scan file cannot be empty"),
                 Optional.Lazy(() => regions != null, "List of regions on the scan cannot be null"),
             };
 
             return validationRules.Reduce()
-                                  .FlatMap(() => new Scan(filepath, number, regions));
+                                  .Map(() => new Scan(file, regions));
         }
 
 
-        public override string ToString() => Path.GetFileNameWithoutExtension(Filepath);
+        public override string ToString() => File.Filename;
     }
 }

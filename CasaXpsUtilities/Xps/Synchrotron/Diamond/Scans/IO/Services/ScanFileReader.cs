@@ -1,85 +1,86 @@
 ﻿namespace CasaXpsUtilities.Xps.Synchrotron.Diamond.Scans.IO.Services
 {
-    using Dtos;
+    using DomainModels;
 
     using HdfLite;
     using HdfLite.Internal;
-    using Upshot;
+    using Ultimately;
+    using Ultimately.Reasons;
 
     using System.Collections.Generic;
-    using System.IO;
-    using System.Text.RegularExpressions;
 
 
     public class ScanFileReader : IScanFileReader
     {
-        public Option<ScanDto> Read(string filepath)
+        public Option<Scan> Read(string filepath)
         {
-            if (!File.Exists(filepath))
+            var scanFileResult = ScanFile.Create(filepath);
+
+            foreach (var (scanFile, _) in scanFileResult)
             {
-                return Optional.None<ScanDto>($"Scan file '{filepath}' does not exist");
-            }
-
-            var filename = Path.GetFileName(filepath);
-
-            var filenameScanNumberMatch = Regex.Match(filename, @"^i09-(\d+)");
-
-            if (!filenameScanNumberMatch.Success)
-            {
-                return Optional.None<ScanDto>($"Failed to parse the scan number from file '{filename}'");
-            }
-
-            using (var scan = Hdf.Open(filepath))
-            {
-                if (scan.FileIdentifier < 0L)
+                using (var scan = Hdf.Open(filepath))
                 {
-                    return Optional.None<ScanDto>($"The file at '{filepath}' is not a valid HDF document");
-                }
-
-
-                var outcome = Optional.Some(default);
-
-
-                var regions = new List<RegionDto>();
-
-                scan.IterateGroup("/entry1/instrument", (n, t, _) =>
-                {
-                    foreach (var __ in outcome)
+                    if (scan.FileIdentifier < 0L)
                     {
-                        if (t == ObjectType.Group)
+                        return Optional.None<Scan>($"The file at '{filepath}' does not exist or is not a valid HDF document");
+                    }
+
+
+                    var outcome = Optional.Some();
+
+
+                    var regions = new List<Region>();
+
+                    scan.IterateGroup("/entry1/instrument", (n, t, _) =>
+                    {
+                        foreach (var __ in outcome)
                         {
-                            var energies = scan.GetData<double>($"/entry1/instrument/{n}/energies");
-
-                            if (energies != null)
+                            if (t == ObjectType.Group)
                             {
-                                var imageData = scan.GetData<double>($"/entry1/instrument/{n}/image_data");
+                                var energies = scan.GetData<double>($"/entry1/instrument/{n}/energies");
 
-                                if (imageData == null)
+                                if (energies != null)
                                 {
-                                    outcome = Optional.None($"Region '{n}' in file '{filename}' does not contain dataset 'image_data'");
+                                    var imageData = scan.GetData<double>($"/entry1/instrument/{n}/image_data");
 
-                                    return;
+                                    if (imageData == null)
+                                    {
+                                        outcome = Optional.None($"Region '{n}' in file '{scanFile.Filename}' does not contain dataset 'image_data'");
+
+                                        return;
+                                    }
+
+                                    if (!imageData.ChangeTime.HasValue)
+                                    {
+                                        outcome = Optional.None($"Dataset 'image_data' in region '{n}' of file '{scanFile.Filename}' does not specify a change time");
+
+                                        return;
+                                    }
+
+
+                                    var createRegionResult = Region.Create(n);
+
+                                    foreach (var (region, _) in createRegionResult)
+                                    {
+                                        regions.Add(region);
+
+                                        return;
+                                    }
+
+                                    createRegionResult.MatchNone(e => outcome = Optional.None(Error.Create($"Validation error when parsing region in file '{scanFile.Filename}'").CausedBy(e)));
                                 }
-
-                                if (!imageData.ChangeTime.HasValue)
-                                {
-                                    outcome = Optional.None($"Dataset 'image_data' in region '{n}' of file '{filename}' does not specify a change time");
-
-                                    return;
-                                }
-
-
-
-                                regions.Add(new RegionDto(n));
                             }
                         }
-                    }
-                });
+                    });
 
 
 
-                return outcome.FlatMap(() => new ScanDto(filepath, filenameScanNumberMatch.Groups[1].Value, regions));
+                    return outcome.FlatMap(() => Scan.Create(scanFile, regions));
+                }
             }
+
+            return Optional.None<ScanFile, Scan>(scanFileResult);
+            
         }
     }
 }

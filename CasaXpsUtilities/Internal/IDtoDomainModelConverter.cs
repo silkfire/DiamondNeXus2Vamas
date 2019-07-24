@@ -1,6 +1,6 @@
 ﻿namespace CasaXpsUtilities.Internal
 {
-    using Upshot;
+    using Ultimately;
 
 
     public interface IDtoDomainModelConverter<TDto, TDomainModel>
