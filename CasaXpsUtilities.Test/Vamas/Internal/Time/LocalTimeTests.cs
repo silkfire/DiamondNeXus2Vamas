@@ -34,7 +34,7 @@ namespace CasaXpsUtilities.Test.Vamas.Internal.Time
                 var localTimeExpected = Instant.FromUnixTimeSeconds(_unixTimeSecondsUtc[unixTimeSecondsKey]).InZone(DateTimeZoneProviders.Tzdb[timeZoneId]);
 
 
-                var localTimeOutcome = LocalTime.Create(_unixTimeSecondsUtc[unixTimeSecondsKey], timeZoneId);
+                var localTimeOutcome = LocalTime.Create((ulong)_unixTimeSecondsUtc[unixTimeSecondsKey], timeZoneId);
 
 
                 Assert.Equal(localTimeExpected.ToDateTimeUnspecified(), localTimeOutcome.Value);

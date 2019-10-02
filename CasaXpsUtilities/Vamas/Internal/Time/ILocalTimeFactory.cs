@@ -3,6 +3,6 @@
     public interface ILocalTimeFactory<out TLocalTime>
         where TLocalTime : ILocalTime
     {
-        TLocalTime Create(long unixTimeSeconds);
+        TLocalTime Create(ulong unixTimeSeconds);
     }
 }

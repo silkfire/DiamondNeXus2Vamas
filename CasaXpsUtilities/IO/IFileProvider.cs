@@ -1,5 +1,7 @@
 ﻿namespace CasaXpsUtilities.IO
 {
+    using Ultimately;
+
     using System.Collections.Generic;
 
 
@@ -11,6 +13,6 @@
         /// <summary>
         /// Retrieves a read-only list of filenames.
         /// </summary>
-        IReadOnlyList<string> GetFiles();
+        Option<IReadOnlyList<string>> GetFiles();
     }
 }

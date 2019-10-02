@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -7,16 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NodaTime" Version="2.4.6" />
+    <PackageReference Include="NodaTime" Version="2.4.7" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\2019\Ultimately\src\Ultimately.csproj" />
     <ProjectReference Include="..\..\..\2018\HdfLite\HdfLite.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Xps\Synchrotron\IO\Diamond\" />
   </ItemGroup>
 
 </Project>

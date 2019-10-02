@@ -4,7 +4,7 @@
 
 
     /// <summary>
-    /// Specifies a local time and its offset to UTC as a formatted string.
+    /// Represents a local time and exposes a property that represents its offset from UTC as a formatted string.
     /// </summary>
     public interface ILocalTime
     {

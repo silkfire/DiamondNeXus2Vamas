@@ -1,72 +1,102 @@
 ﻿namespace CasaXpsUtilities.DiamondNeXus2Vamas
 {
-    using System;
-    using System.Drawing;
-    using Internal;
     using Pastel;
-    using Services.Converters.DiamondScan2Vamas.DomainModels;
-    using Xps.Synchrotron.Diamond.Scans.DomainModels;
-    using Xps.Synchrotron.Diamond.Scans.Dtos;
-    using Xps.Synchrotron.Diamond.Scans.IO;
+    using Ultimately;
+    using Ultimately.Async;
+
+    using System;
+    using System.Diagnostics;
+    using System.Drawing;
+    using System.Runtime.InteropServices;
+    using System.Text;
+    using System.Threading.Tasks;
 
 
     public class App
     {
-        public static void Main()
+        public static async Task Main()
         {
-            //var scanFile = ScanFile.Create(@"C:\Users\Gabriel\Documents\Visual Studio 2017\Projects\2018\CasaXpsUtilities\test-Oct\i09-144646.nxs");
+            Console.OutputEncoding = Encoding.UTF8;
 
 
+            var bracketColour = Color.FromArgb(201, 64, 106);
+            var defaultMessagePrefix = $"\r\n{"[".Pastel(bracketColour)}{"CasaXpsUtilities".Pastel(Color.FromArgb(62, 102, 208))}{"]".Pastel(bracketColour)} ";
+
+            var errorMessageTemplate = $"{defaultMessagePrefix}{"Failed to create VMS file: ".Pastel(Color.FromArgb(241, 76, 76))}{{0}}";
 
 
-
-            //Environment.Exit(0);
-
-            //var scan = Scan.Load(@"C:\Users\Gabriel\Documents\Visual Studio 2017\Projects\2018\CasaXpsUtilities\test-Oct\i09-144646.nxs");
-
-
-
-            var reader = Startup.Container.Locate<IScanFileReader>();
-
-            var scanResult = reader.Read(@"D:\Projects\2017\2018\CasaXpsUtilities\test-Oct\i09-144646.nxs");
-
-            //var scanConverter = Startup.Container.Locate<IDtoDomainModelConverter<ScanDto, Scan>>();
-
-            //var scan = scanResult.FlatMap(s => scanConverter.Convert(s));
-
-
-            foreach (var (value, _) in scanResult)
+            try
             {
-                foreach (var region in value.Regions)
+                var configurationSerializer = Startup.Container.Locate<ConfigurationSerializer>();
+
+                var configurationReadResult = await configurationSerializer.Read().FlatMapAsync(c => c.SomeWhen(_c => _c != null && !string.IsNullOrWhiteSpace(_c.ConversionDefinitionFilepath), "Definitions filepath is empty"));
+
+                var cachedDefinitionsFileInfo = "";
+
+                if (configurationReadResult.HasValue)
                 {
-                    Console.WriteLine(region.Name.Pastel(Color.Aquamarine));
+                    cachedDefinitionsFileInfo = $" or press {"ENTER".Pastel(Color.FromArgb(255, 208, 0))} to reuse the previously used one";
                 }
+
+
+                // Resize window to fit the messages
+
+                Console.Title = nameof(CasaXpsUtilities);
+
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    Console.WindowWidth = 215;
+                }
+
+                Console.WriteLine($"Please specify the path to the conversion definition file{cachedDefinitionsFileInfo}:");
+
+
+                var readLine = Console.ReadLine();
+
+                string conversionDefinitionFilepath = null;
+
+                if (readLine == "" && configurationReadResult.HasValue)
+                {
+                    configurationReadResult.MatchSome(c => conversionDefinitionFilepath = c.ConversionDefinitionFilepath);
+
+
+                    // Move caret up one step and write on the previous line (due to the user having pressed ENTER - looks more neat)
+                    // http://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html
+
+                    Console.Write("\u001b[1A");
+                }
+                else
+                {
+                    conversionDefinitionFilepath = readLine.Trim('"');
+                }
+
+                //var sw = new Stopwatch();
+                //sw.Start();
+                var conversionResult = await Startup.Container.Locate<ConversionService>().ConvertAndCreateOutputFile(conversionDefinitionFilepath);
+                //sw.Stop();
+                //Console.WriteLine($"Elapsed time: {(double)sw.ElapsedMilliseconds / 1000:#0.000}s");
+                await conversionResult.Match(
+                    some: async cr =>
+                    {
+                        Console.WriteLine($"{defaultMessagePrefix}Generated VMS file has been saved to {$"{cr.outputDirectoryPath}\\".Pastel(Color.MediumSeaGreen)}{cr.outputFilename.Pastel(Color.MediumSpringGreen)}.");
+
+                        if (!configurationReadResult.Exists(c => c.ConversionDefinitionFilepath == conversionDefinitionFilepath))
+                        {
+                            await configurationSerializer.SaveAsync(new Configuration(conversionDefinitionFilepath));
+                        }
+                    },
+                    none: e =>
+                    {
+                        Console.WriteLine(errorMessageTemplate, e.Print(" → ".Pastel(Color.FromArgb(241, 129, 129)), 0, s => s.Pastel(Color.FromArgb(234, 217, 217))));
+
+                        return Task.CompletedTask;
+                    }
+                );
             }
-
-
-            //ISpectraReader spectraReader = null;
-
-            //Task.Run(() => spectraReader = Startup.Container.Locate<ISpectraReader>());
-
-            //Console.WriteLine("Please provide the location of the definitions file:");
-
-            //var definitionsFilepath = Console.ReadLine();
-
-            //var sw = new Stopwatch();
-            //sw.Start();
-
-            //var localTimeFactory = Startup.Container.Locate<ILocalTimeFactory<ILocalTime>>();
-
-            //var ukLocalTime = localTimeFactory.Create(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-            //var ukLocalTime2 = localTimeFactory.Create(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-
-            //sw.Stop();
-
-            //Console.WriteLine($"{(sw.Elapsed.TotalMilliseconds / 1000).ToString("0.00000000", CultureInfo.InvariantCulture).Pastel("FFCA00")}s");
-
-            //Console.WriteLine(ukLocalTime);
-            //Console.WriteLine(ukLocalTime2);
-
+            catch (Exception e)
+            {
+                Console.WriteLine(errorMessageTemplate, "An unexpected error occurred.");
+            }
 
             Console.WriteLine("\nPress any key to continue.");
             Console.ReadKey(true);

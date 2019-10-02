@@ -5,13 +5,13 @@
         private readonly string _timeZoneId;
 
 
-        public LocalTimeFactory(TimeZoneId timeZoneId)
+        public LocalTimeFactory(string timeZoneId)
         {
-            _timeZoneId = timeZoneId();
+            _timeZoneId = timeZoneId;
         }
 
 
-        public LocalTime Create(long unixTimeSeconds)
+        public LocalTime Create(ulong unixTimeSeconds)
         {
             return LocalTime.Create(unixTimeSeconds, _timeZoneId);
         }

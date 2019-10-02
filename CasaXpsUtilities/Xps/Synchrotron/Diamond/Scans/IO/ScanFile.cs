@@ -1,27 +1,39 @@
-﻿namespace CasaXpsUtilities.Xps.Synchrotron.Diamond.Scans.DomainModels
+﻿namespace CasaXpsUtilities.Xps.Synchrotron.Diamond.Scans.IO
 {
+    using CasaXpsUtilities.IO;
+
     using Ultimately;
+    using Ultimately.Collections;
     using Ultimately.Utilities;
 
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Text.RegularExpressions;
 
 
+    /// <summary>
+    /// Represents a Diamond beamline scan file.
+    /// </summary>
     public class ScanFile
     {
         internal static Regex MatchScanNumber => new Regex(@"^i09-(\d+)");
 
 
-        public string Filepath { get; }
+        public string ScanDirectory { get; }
 
         public string Filename { get; }
 
         public uint Number { get; }
 
 
-        private ScanFile(string filepath, string filename, uint number)
+        public string Filepath => $"{ScanDirectory}/{Filename}";
+
+
+
+        private ScanFile(string scanDirectory, string filename, uint number)
         {
-            Filepath = filepath;
+            ScanDirectory = scanDirectory;
             Filename = filename;
             Number = number;
         }
@@ -30,7 +42,7 @@
    
         public static Option<ScanFile> Create(string filepath, uint number)
         {
-            return NotEmptyFilepath(filepath).Map(() => new ScanFile(filepath, Path.GetFileName(filepath), number));
+            return NotEmptyFilepath(filepath).Map(() => new ScanFile(Path.GetDirectoryName(filepath), Path.GetFileName(filepath), number));
         }
 
         public static Option<ScanFile> Create(string filepath)
@@ -47,7 +59,7 @@
                                                                                                                                                                     m.Filename,
                                                                                                                                                                     Number = sn
                                                                                                                                                                 }))
-                                             .Map(sf => new ScanFile(filepath, sf.Filename, sf.Number));
+                                             .Map(sf => new ScanFile(Path.GetDirectoryName(filepath), sf.Filename, sf.Number));
         }
 
 
@@ -55,6 +67,29 @@
         private static Option NotEmptyFilepath(string filepath)
         {
             return Optional.SomeWhen(!string.IsNullOrWhiteSpace(filepath), "Filepath to scan cannot be empty");
+        }
+
+        public static Option<IReadOnlyList<ScanFile>> FilterByRanges(IFileProvider scanFileProvider, IEnumerable<ScanNumberRange> scanNumberRanges)
+        {
+            var validationRules = new List<LazyOption>
+            {
+                Optional.Lazy(() => scanFileProvider != null, "Scan file provider cannot be null"),
+                Optional.Lazy(() => scanNumberRanges != null, "List of scan number ranges to match against cannot be null")
+            };
+
+            return validationRules.Reduce()
+                                  .FlatMap(() => scanFileProvider.GetFiles().Filter(sfps => sfps != null, "List of scan files to filter cannot be null"))
+                                  .FlatMap(sfps => sfps.Select(Create).Transform(sf => sf))
+                                  .FlatMap(sfs =>
+                                  {
+                                      var scanNumberRangesList = scanNumberRanges.ToList();
+
+                                      return Optional.SomeWhen(sfs.Count > 0, "List of scan files to filter cannot be empty")
+                                                     .FlatMap(() => Optional.SomeWhen(scanNumberRangesList.Count > 0, "List of scan number ranges to match against cannot be empty"))
+                                                     .Map(() => sfs.Where(sf => scanNumberRangesList.Any(sn => sf.Number >= sn.First && sf.Number <= sn.Last))
+                                                                   .ToList()
+                                                                   .AsReadOnly() as IReadOnlyList<ScanFile>);
+                                  });
         }
 
 

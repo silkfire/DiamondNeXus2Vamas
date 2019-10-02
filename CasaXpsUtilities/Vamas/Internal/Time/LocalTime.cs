@@ -6,31 +6,31 @@
     using System;
 
 
-    public class LocalTime : ILocalTime
+    public sealed class LocalTime : ILocalTime
     {
-        protected static readonly OffsetPattern _offsetPattern = OffsetPattern.CreateWithInvariantCulture("-H");
+        private static readonly OffsetPattern _offsetPattern = OffsetPattern.CreateWithInvariantCulture("-H");
 
-        private readonly ZonedDateTime _zonedLocalTime;
-
-
-        public DateTime Value => _zonedLocalTime.ToDateTimeUnspecified();
-
-        public string UtcOffset => _offsetPattern.Format(_zonedLocalTime.Offset);
+        private readonly ZonedDateTime _value;
 
 
+        public DateTime Value => _value.ToDateTimeUnspecified();
 
-        private LocalTime(long unixTimeSeconds, string timeZoneId)
+        public string UtcOffset => _offsetPattern.Format(_value.Offset);
+
+
+
+        private LocalTime(ulong unixTimeSeconds, string timeZoneId)
         {
-            _zonedLocalTime = Instant.FromUnixTimeSeconds(unixTimeSeconds).InZone(DateTimeZoneProviders.Tzdb[timeZoneId]);
+            _value = Instant.FromUnixTimeSeconds((long)unixTimeSeconds).InZone(DateTimeZoneProviders.Tzdb[timeZoneId]);
         }
 
-        public static LocalTime Create(long unixTimeSeconds, string timeZoneId)
+        public static LocalTime Create(ulong unixTimeSeconds, string timeZoneId)
         {
             return new LocalTime(unixTimeSeconds, timeZoneId);
         }
 
 
 
-        public override string ToString() => _zonedLocalTime.ToString();
+        public override string ToString() => _value.ToString();
     }
 }

@@ -1,16 +1,13 @@
 ﻿namespace CasaXpsUtilities.DiamondNeXus2Vamas
 {
-    using Internal;
-    using IO;
     using Vamas.Internal.Time;
-    using Xps.Synchrotron.Diamond.Scans.DomainModels;
-    using Xps.Synchrotron.Diamond.Scans.Dtos;
-    //using Xps.Synchrotron.Diamond.Scans.Internal.Converters;
+    using Vamas.IO;
     using Xps.Synchrotron.Diamond.Scans.IO;
-    using Xps.Synchrotron.Diamond.Scans.IO.Services;
 
     using Grace.DependencyInjection;
 
+    using System;
+    using System.IO;
 
 
     internal static class Startup
@@ -22,20 +19,9 @@
         {
             Container.Configure(_ =>
             {
-                _.ExportAs<ScanFileProvider, IFileProvider>();
-                _.ExportAs<ScanFileReader, IScanFileReader>();
-
-                //_.ExportAs<RegionConverter, IDtoDomainModelConverter<RegionDto, Region>>();
-                //_.ExportAs<ScanConverter,   IDtoDomainModelConverter<ScanDto,   Scan>>();
-
-                _.Export<LocalTimeFactory>().WithCtorParam<TimeZoneId>(() => () => "Europe/London")
-                 .As<ILocalTimeFactory<ILocalTime>>();
+                _.ExportFactory(() => new ConfigurationSerializer(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json"))).Lifestyle.Singleton();
+                _.ExportFactory<NeXusReader, ConversionService>(nr => new ConversionService(nr, new LocalTimeFactory("Europe/London"), new VamasWriter(new TemplateProvider(typeof(Startup), "Templates")))).Lifestyle.Singleton();
             });
-
-
-            // Dummy pre-loading
-
-            Container.Locate<ILocalTimeFactory<ILocalTime>>().Create(0);
         }
     }
 }
