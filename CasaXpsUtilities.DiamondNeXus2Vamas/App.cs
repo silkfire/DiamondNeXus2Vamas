@@ -22,7 +22,7 @@
             var bracketColour = Color.FromArgb(201, 64, 106);
             var defaultMessagePrefix = $"\r\n{"[".Pastel(bracketColour)}{"CasaXpsUtilities".Pastel(Color.FromArgb(62, 102, 208))}{"]".Pastel(bracketColour)} ";
 
-            var errorMessageTemplate = $"{defaultMessagePrefix}{"Failed to create VMS file: ".Pastel(Color.FromArgb(241, 76, 76))}{{0}}";
+            var errorMessageTemplate = $"{defaultMessagePrefix}{"ERROR".Pastel(Color.White).PastelBg(Color.FromArgb(222, 54, 26))} {{0}}";
 
 
             try
@@ -87,7 +87,7 @@
                     },
                     none: e =>
                     {
-                        Console.WriteLine(errorMessageTemplate, e.Print(" → ".Pastel(Color.FromArgb(241, 129, 129)), 0, s => s.Pastel(Color.FromArgb(234, 217, 217))));
+                        Console.WriteLine(errorMessageTemplate, e.Print(" → ".Pastel(Color.WhiteSmoke), 0, s => s.Pastel(Color.FromArgb(230, 44, 34))));
 
                         return Task.CompletedTask;
                     }

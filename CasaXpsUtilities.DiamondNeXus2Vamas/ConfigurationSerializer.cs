@@ -1,16 +1,17 @@
 ﻿namespace CasaXpsUtilities.DiamondNeXus2Vamas
 {
-    using System;
-    using System.Collections.Generic;
-    using Ultimately;
 
-    using System.IO;
-    using System.Text.Json;
-    using System.Threading.Tasks;
     using Omu.ValueInjecter;
+    using Ultimately;
     using Ultimately.Async;
     using Ultimately.Collections;
     using Ultimately.Reasons;
+
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Text.Json;
+    using System.Threading.Tasks;
 
 
     public class ConfigurationSerializer
@@ -51,7 +52,7 @@
                                             {
                                                 await using var fs = new FileStream(_configurationLocation, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, 4096, FileOptions.Asynchronous);
                                                 {
-                                                    await JsonSerializer.SerializeAsync(fs, ce);
+                                                    await JsonSerializer.SerializeAsync(fs, ce, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
 
                                                     return Optional.Some(Success.Create($"Configuration file successfully saved to '{_configurationLocation}'"));
                                                 }

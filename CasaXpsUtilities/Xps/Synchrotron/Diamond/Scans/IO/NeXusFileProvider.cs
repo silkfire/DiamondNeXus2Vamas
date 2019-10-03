@@ -22,7 +22,7 @@
 
         public Option<IReadOnlyList<string>> GetFiles()
         {
-            return Optional.SomeWhen(Directory.Exists(_sourceFileDirectoryPath), $"Provided source file directory '{_sourceFileDirectoryPath}' does not exist")
+            return Optional.SomeWhen(Directory.Exists(_sourceFileDirectoryPath), $"Specified source file directory '{_sourceFileDirectoryPath}' does not exist")
                            .Map(() => Directory.GetFiles(_sourceFileDirectoryPath, "*.nxs").ToList().AsReadOnly() as IReadOnlyList<string>);
         }
     }

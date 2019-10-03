@@ -2,6 +2,7 @@
 {
     using Ultimately;
     using Ultimately.Async;
+    using Ultimately.Collections;
     using Ultimately.Reasons;
 
     using System.Collections.Generic;
@@ -13,14 +14,21 @@
     {
         public static async Task<Option<ConversionDefinition>> Read(string filepath)
         {
-            return await Optional.SomeWhen(File.Exists(filepath), $"Conversion definition file '{filepath}' does not exist")
-                                 .FlatMapAsync(async () =>
-                                 {
-                                     using (var fs = new FileStream(filepath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan))
-                                     {
-                                         return await Read(filepath, fs);
-                                     }
-                                 });
+            var validationRules = new List<LazyOption>
+            {
+                Optional.Lazy(() => !string.IsNullOrWhiteSpace(filepath), "Provided filepath cannot be empty"),
+                Optional.Lazy(() => File.Exists(filepath), $"File '{filepath}' does not exist")
+            };
+
+            return await validationRules.Reduce()
+                                        .FlatMapNone("Failed to read conversion definition file")
+                                        .FlatMapAsync(async () =>
+                                        {
+                                            using (var fs = new FileStream(filepath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan))
+                                            {
+                                                return await Read(filepath, fs);
+                                            }
+                                        });
         }
 
         public static async Task<Option<ConversionDefinition>> Read(string filepath, Stream stream)

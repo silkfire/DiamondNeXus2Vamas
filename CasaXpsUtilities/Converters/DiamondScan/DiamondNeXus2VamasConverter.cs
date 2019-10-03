@@ -30,10 +30,6 @@
         }
 
 
-
-
-        // TODO: Region -> Block conversion method
-
         public Option<VamasDataSet> Convert(ConversionDefinition conversionDefinition)
         {
             return Optional.SomeWhen(conversionDefinition != null, "Conversion definition cannot be null").FlatMap(() =>
@@ -114,7 +110,7 @@
                 }
 
                 return VamasDataSet.Create(new DirectoryInfo(conversionDefinition.ScanFilesDirectoryPath).Name, sampleIdentifiers, blocks);
-            }, "Conversion failed");
+            });
         }
 
         private static string FormatBlockName(double stepTime, uint scanNumber, string regionName)

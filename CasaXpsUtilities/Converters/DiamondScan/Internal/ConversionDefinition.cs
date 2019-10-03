@@ -52,7 +52,7 @@
                                   {
                                       var sampleInformationStringList = sampleInformationStrings.ToList();
 
-                                      return sampleInformationStringList.SomeWhen(siss => siss.Count > 0, "Must contain at least one sample information string");
+                                      return sampleInformationStringList.SomeWhen(siss => siss.Count > 0, "Definition must contain at least one sample information string");
                                   })
                                   .Map(siss => new ConversionDefinition(filepath, scanFilesDirectoryPath, siss), "Conversion definition validation failed");
         }
@@ -118,8 +118,8 @@
                                      {
                                          if (m.Groups[3].Success)
                                          {
-                                             return ParseNumber(TryParse.ToUShort, m.Groups[3].Value, "energy value").Map(ke => ke.Some(Success.Create("Override excitation energy read from the sample with the specified kinetic energy value")))
-                                                                                                                     .FlatMap(ke => Create(m.Groups[1].Value, rr, ke));
+                                             return ParseNumber(TryParse.ToUShort, m.Groups[3].Value, "kinetic energy value").Map(ke => ke.Some(Success.Create("Override excitation energy read from the sample with the specified kinetic energy value")))
+                                                                                                                             .FlatMap(ke => Create(m.Groups[1].Value, rr, ke));
                                          }
 
                                          return Create(m.Groups[1].Value, rr, Optional.None<ushort>("Use binding energy value from sample"));

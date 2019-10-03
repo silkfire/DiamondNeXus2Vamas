@@ -86,7 +86,7 @@
 
                                       return Optional.SomeWhen(sfs.Count > 0, "List of scan files to filter cannot be empty")
                                                      .FlatMap(() => Optional.SomeWhen(scanNumberRangesList.Count > 0, "List of scan number ranges to match against cannot be empty"))
-                                                     .Map(() => sfs.Where(sf => scanNumberRangesList.Any(sn => sf.Number >= sn.First && sf.Number <= sn.Last))
+                                                     .Map(() => sfs.Where(sf => scanNumberRangesList.Any(sn => sf.Number >= sn.StartingValue && sf.Number <= sn.FinalValue))
                                                                    .ToList()
                                                                    .AsReadOnly() as IReadOnlyList<ScanFile>);
                                   });

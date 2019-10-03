@@ -10,6 +10,7 @@
     <!--<PublishTrimmed>true</PublishTrimmed>-->
     <PublishSingleFile>true</PublishSingleFile>
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
+    <SelfContained>false</SelfContained>
   </PropertyGroup>
 
   <ItemGroup>

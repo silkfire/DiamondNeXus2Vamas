@@ -9,35 +9,35 @@
     public class ScanNumberRange
     {
         /// <summary>
-        /// First scan number in range.
+        /// Starting scan number value in range.
         /// </summary>
-        public uint First { get; }
+        public uint StartingValue { get; }
 
         /// <summary>
-        /// Last scan number in range.
+        /// Final scan number value in range.
         /// </summary>
-        public uint Last { get; }
+        public uint FinalValue { get; }
 
 
-        private ScanNumberRange(uint first, uint last)
+        private ScanNumberRange(uint startingValue, uint finalValue)
         {
-            First = first;
-            Last = last;
+            StartingValue = startingValue;
+            FinalValue = finalValue;
         }
 
-        public static Option<ScanNumberRange> Create(uint first, uint last)
+        public static Option<ScanNumberRange> Create(uint startingValue, uint finalValue)
         {
             var validationRules = new List<LazyOption>
             {
-                Optional.Lazy(() => first > 0, "First scan number in range must be greater than zero"),
-                Optional.Lazy(() => last  > 0, "Last scan number in range must be greater than zero"),
-                Optional.Lazy(() => last  >= first, $"Last scan number in range must be greater than the first value: [{first}-{last}]"),
+                Optional.Lazy(() => startingValue > 0, "Starting value of scan number range must be greater than zero"),
+                Optional.Lazy(() => finalValue    > 0, "Final value of scan number range must be greater than zero"),
+                Optional.Lazy(() => finalValue   >= startingValue, $"Starting value of scan number range must be smaller than the final one: {{ {startingValue} [too big] - {finalValue} }}"),
             };
 
-            return validationRules.Reduce().Map(() => new ScanNumberRange(first, last));
+            return validationRules.Reduce().Map(() => new ScanNumberRange(startingValue, finalValue));
         }
 
 
-        public override string ToString() => $"{First}{(First != Last ? $"-{Last}" : "")}";
+        public override string ToString() => $"{StartingValue}{(StartingValue != FinalValue ? $"-{FinalValue}" : "")}";
     }
 }
