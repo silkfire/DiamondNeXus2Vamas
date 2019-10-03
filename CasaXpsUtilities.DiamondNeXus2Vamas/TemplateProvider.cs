@@ -32,10 +32,8 @@
 
             async Task<string> LoadTemplate(string templateName)
             {
-                using (var reader = new StreamReader(_scope.Assembly.GetManifestResourceStream(_scope, $"{_sourceDirectory}.{templateName}.vms")))
-                {
+                using var reader = new StreamReader(_scope.Assembly.GetManifestResourceStream(_scope, $"{_sourceDirectory}.{templateName}.vms"));
                     return await reader.ReadToEndAsync();
-                }
             }
         }
     }

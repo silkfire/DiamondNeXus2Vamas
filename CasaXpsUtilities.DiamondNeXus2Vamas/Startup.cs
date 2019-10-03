@@ -6,7 +6,6 @@
 
     using Grace.DependencyInjection;
 
-    using System;
     using System.IO;
 
 
@@ -19,7 +18,7 @@
         {
             Container.Configure(_ =>
             {
-                _.ExportFactory(() => new ConfigurationSerializer(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json"))).Lifestyle.Singleton();
+                _.ExportFactory(() => new ConfigurationSerializer(Path.Combine(Directory.GetCurrentDirectory(), "config.json"))).Lifestyle.Singleton();
                 _.ExportFactory<NeXusReader, ConversionService>(nr => new ConversionService(nr, new LocalTimeFactory("Europe/London"), new VamasWriter(new TemplateProvider(typeof(Startup), "Templates")))).Lifestyle.Singleton();
             });
         }

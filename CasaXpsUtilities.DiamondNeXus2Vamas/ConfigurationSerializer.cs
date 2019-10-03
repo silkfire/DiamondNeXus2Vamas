@@ -32,7 +32,7 @@
             return await _configurationLocation.SomeWhen(File.Exists, "Configuration file does not exist").MapAsync(async cl =>
             {
                 await using var fs = new FileStream(cl, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan);
-                    return Convert(await JsonSerializer.DeserializeAsync<ConfigurationEntity>(fs));
+                    return Convert(await JsonSerializer.DeserializeAsync<ConfigurationEntity>(fs, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }));
             });
         }
 

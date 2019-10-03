@@ -55,7 +55,7 @@
 
                 string conversionDefinitionFilepath = null;
 
-                if (readLine == "" && configurationReadResult.HasValue)
+                if (readLine == "")
                 {
                     configurationReadResult.MatchSome(c => conversionDefinitionFilepath = c.ConversionDefinitionFilepath);
 
@@ -78,7 +78,7 @@
                 await conversionResult.Match(
                     some: async cr =>
                     {
-                        Console.WriteLine($"{defaultMessagePrefix}Generated VMS file has been saved to {$"{cr.outputDirectoryPath}\\".Pastel(Color.MediumSeaGreen)}{cr.outputFilename.Pastel(Color.MediumSpringGreen)}.");
+                        Console.WriteLine($"{defaultMessagePrefix}Generated VAMAS file has been saved to {$"{cr.outputDirectoryPath}\\".Pastel(Color.MediumSeaGreen)}{cr.outputFilename.Pastel(Color.MediumSpringGreen)}.");
 
                         if (!configurationReadResult.Exists(c => c.ConversionDefinitionFilepath == conversionDefinitionFilepath))
                         {
