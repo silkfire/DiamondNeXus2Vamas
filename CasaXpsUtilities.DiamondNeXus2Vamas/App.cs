@@ -57,8 +57,10 @@
 
                 if (readLine == "")
                 {
-                    configurationReadResult.MatchSome(c => conversionDefinitionFilepath = c.ConversionDefinitionFilepath);
-
+                    foreach (var (configuration, _) in configurationReadResult)
+                    {
+                        conversionDefinitionFilepath = configuration.ConversionDefinitionFilepath;
+                    }
 
                     // Move caret up one step and write on the previous line (due to the user having pressed ENTER - looks more neat)
                     // http://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html
@@ -93,7 +95,7 @@
                     }
                 );
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Console.WriteLine(errorMessageTemplate, "An unexpected error occurred.");
             }

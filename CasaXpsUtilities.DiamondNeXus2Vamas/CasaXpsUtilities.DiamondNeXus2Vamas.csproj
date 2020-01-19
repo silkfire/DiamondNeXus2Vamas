@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <AssemblyName>DiamondNeXus2Vamas</AssemblyName>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
     <RootNamespace>CasaXpsUtilities.DiamondNeXus2Vamas</RootNamespace>
     <PublishReadyToRun>true</PublishReadyToRun>
@@ -26,9 +26,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Grace" Version="7.0.0" />
+    <PackageReference Include="Grace" Version="7.1.0" />
     <PackageReference Include="Pastel" Version="1.3.1" />
-    <PackageReference Include="ValueInjecter" Version="3.2.0" />
+    <PackageReference Include="SpanJson" Version="3.0.1" />
   </ItemGroup>
 
   <ItemGroup>

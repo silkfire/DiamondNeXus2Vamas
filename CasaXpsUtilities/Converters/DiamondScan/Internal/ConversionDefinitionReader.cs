@@ -24,7 +24,7 @@
                                         .FlatMapNone("Failed to read conversion definition file")
                                         .FlatMapAsync(async () =>
                                         {
-                                            using (var fs = new FileStream(filepath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan))
+                                            using (var fs = new FileStream(filepath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan))
                                             {
                                                 return await Read(filepath, fs);
                                             }

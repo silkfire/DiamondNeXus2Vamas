@@ -28,10 +28,8 @@
 
         public async Task<Option> Write(VamasDataSet dataSet, string destinationFilepath)
         {
-            using (var fs = new FileStream(destinationFilepath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, 4096, FileOptions.Asynchronous))
-            {
+            await using var fs = new FileStream(destinationFilepath, FileMode.Create, FileAccess.Write, FileShare.Read, 4096, FileOptions.Asynchronous);
                 return await Write(dataSet, fs).FlatMapNoneAsync("Failed to save VAMAS file");
-            }
         }
 
         public async Task<Option> Write(VamasDataSet dataSet, Stream stream)

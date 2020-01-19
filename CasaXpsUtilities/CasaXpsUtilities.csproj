@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
     <RootNamespace>CasaXpsUtilities</RootNamespace>
   </PropertyGroup>
@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\2019\LiteHDF\src\LiteHDF.csproj" />
     <ProjectReference Include="..\..\..\..\2019\Ultimately\src\Ultimately.csproj" />
-    <ProjectReference Include="..\..\..\2018\HdfLite\HdfLite.csproj" />
   </ItemGroup>
 
 </Project>
