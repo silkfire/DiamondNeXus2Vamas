@@ -1,6 +1,6 @@
 ﻿namespace CasaXpsUtilities.DiamondNeXus2Vamas
 {
-    using Common;
+    using Shared;
     using Vamas.IO;
 
     using System;

@@ -1,6 +1,6 @@
 ﻿namespace CasaXpsUtilities.Vamas.IO
 {
-    using Common;
+    using Shared;
 
     using Ultimately;
     using Ultimately.Async;
@@ -46,43 +46,23 @@
                                         {
                                             try
                                             {
-                                                using (var sw = new StreamWriter(stream))
+                                                await using var sw = new StreamWriter(stream);
+
+                                                var blockIndex = 0;
+
+                                                await sw.WriteAsync(await FormatFileHeader());
+
+                                                foreach (var block in dataSet.Blocks)
                                                 {
-                                                    var blockIndex = 0;
+                                                    await sw.WriteAsync(await FormatBlock(block, blockIndex++));
 
-                                                    if (stream is MemoryStream)
+                                                    foreach (var count in block.Counts)
                                                     {
-                                                        sw.Write(await FormatFileHeader());
-
-                                                        foreach (var block in dataSet.Blocks)
-                                                        {
-                                                            sw.Write(await FormatBlock(block, blockIndex++));
-
-                                                            foreach (var count in block.Counts)
-                                                            {
-                                                                sw.WriteLine(count.ToString("G17", CultureInfo.InvariantCulture));
-                                                            }
-                                                        }
-
-                                                        sw.Write(await FormatFileFooter());
-                                                    }
-                                                    else
-                                                    {
-                                                        await sw.WriteAsync(await FormatFileHeader());
-
-                                                        foreach (var block in dataSet.Blocks)
-                                                        {
-                                                            await sw.WriteAsync(await FormatBlock(block, blockIndex++));
-
-                                                            foreach (var count in block.Counts)
-                                                            {
-                                                                await sw.WriteLineAsync(count.ToString("G17", CultureInfo.InvariantCulture));
-                                                            }
-                                                        }
-
-                                                        await sw.WriteAsync(await FormatFileFooter());
+                                                        await sw.WriteLineAsync(count.ToString("G17", CultureInfo.InvariantCulture));
                                                     }
                                                 }
+
+                                                await sw.WriteAsync(await FormatFileFooter());
                                             }
                                             catch (Exception e)
                                             {

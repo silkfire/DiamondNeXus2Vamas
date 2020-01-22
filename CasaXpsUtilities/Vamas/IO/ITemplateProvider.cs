@@ -1,6 +1,6 @@
 ﻿namespace CasaXpsUtilities.Vamas.IO
 {
-    using Common;
+    using Shared;
 
     using System.Collections.Generic;
 

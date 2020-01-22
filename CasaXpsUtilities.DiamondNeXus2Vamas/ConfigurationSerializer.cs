@@ -15,8 +15,6 @@
 
     public class ConfigurationSerializer
     {
-        // TODO: Use SpanJson instead
-
         private readonly string _configurationLocation;
 
 
