@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\2019\LiteHDF\src\LiteHDF.csproj" />
-    <ProjectReference Include="..\..\..\..\2019\Ultimately\src\Ultimately.csproj" />
+    <ProjectReference Include="..\..\LiteHDF\src\LiteHDF.csproj" />
+    <ProjectReference Include="..\..\Ultimately\src\Ultimately.csproj" />
   </ItemGroup>
 
 </Project>
