@@ -3,6 +3,7 @@
     using Pastel;
     using Ultimately;
     using Ultimately.Async;
+    using Ultimately.Collections;
 
     using System;
     using System.Diagnostics;
@@ -14,7 +15,7 @@
 
     public class App
     {
-        public static async Task Main()
+        public static async Task Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
 
@@ -45,7 +46,7 @@
 
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    Console.WindowWidth = 215;
+                    Console.WindowWidth = Math.Min(Console.LargestWindowWidth, 215);
                 }
 
                 Console.WriteLine($"Please specify the path to the conversion definition file{cachedDefinitionsFileInfo}:");
@@ -95,9 +96,11 @@
                     }
                 );
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 Console.WriteLine(errorMessageTemplate, "An unexpected error occurred.");
+
+                if (args != null && args.SingleOrNone().Contains("debug")) Console.WriteLine(e);
             }
 
             Console.WriteLine("\nPress any key to continue.");

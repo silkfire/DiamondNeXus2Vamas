@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CasaXpsUtilities.DiamondNeXus2Vamas": {
+      "commandName": "Project",
+      "commandLineArgs": "debug"
+    }
+  }
+}
