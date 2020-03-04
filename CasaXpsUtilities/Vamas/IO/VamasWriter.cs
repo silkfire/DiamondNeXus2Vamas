@@ -100,7 +100,7 @@
                                      blockIndex,
                                      block.Species,
                                      block.StartingEnergyValue.ToString("0.#", CultureInfo.InvariantCulture),
-                                     block.EnergyStep.ToString("0.0", CultureInfo.InvariantCulture),
+                                     block.EnergyStep.ToString("0.0##", CultureInfo.InvariantCulture),
                                      block.Counts.Count,
                                      block.Counts.Min().ToString("G17", CultureInfo.InvariantCulture),
                                      block.Counts.Max().ToString("G17", CultureInfo.InvariantCulture));

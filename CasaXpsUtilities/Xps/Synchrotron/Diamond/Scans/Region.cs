@@ -46,7 +46,6 @@
             {
                 Optional.Lazy(() => !string.IsNullOrWhiteSpace(name), "Name cannot be empty"),
                 Optional.Lazy(() => creationTimeUnix > 0, "Creation time must be greater than zero"),
-                Optional.Lazy(() => startingEnergyValue > 0, $"Starting energy value must be greater than zero (was {startingEnergyValue})"),
                 Optional.Lazy(() => counts != null, "List of counts cannot be null"),
                 Optional.Lazy(() => excitationEnergy > 0, "Excitation energy must be greater than zero"),
                 Optional.Lazy(() => stepTime > 0, $"Step time must be greater than zero (was {stepTime})"),

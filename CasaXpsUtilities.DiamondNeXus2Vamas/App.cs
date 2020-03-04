@@ -81,7 +81,7 @@
                 await conversionResult.Match(
                     some: async cr =>
                     {
-                        Console.WriteLine($"{defaultMessagePrefix}Generated VAMAS file has been saved to {$"{cr.outputDirectoryPath}\\".Pastel(Color.MediumSeaGreen)}{cr.outputFilename.Pastel(Color.MediumSpringGreen)}.");
+                        Console.WriteLine($"{defaultMessagePrefix}Generated VAMAS file has been saved to {$"{cr.OutputDirectoryPath}".Pastel(Color.MediumSeaGreen)}{cr.OutputFilename.Pastel(Color.MediumSpringGreen)}.");
 
                         if (!configurationReadResult.Exists(c => c.ConversionDefinitionFilepath == conversionDefinitionFilepath))
                         {

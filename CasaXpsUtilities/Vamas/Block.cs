@@ -39,7 +39,7 @@
             ScanFilepath = scanFilepath;
             RegionName = regionName;
             Species = species;
-            StartingEnergyValue = startingEnergyValue;
+            StartingEnergyValue = -1 * startingEnergyValue;
             EnergyStep = energyStep;
             Counts = counts.ToList().AsReadOnly();
         }
@@ -54,7 +54,6 @@
                 Optional.Lazy(() => !string.IsNullOrWhiteSpace(scanFilepath), "Scan filepath cannot be empty"),
                 Optional.Lazy(() => !string.IsNullOrWhiteSpace(regionName), "Region name cannot be empty"),
                 Optional.Lazy(() => !string.IsNullOrWhiteSpace(species), "Species cannot be empty"),
-                Optional.Lazy(() => startingEnergyValue > 0, $"Starting energy value must be greater than zero (was {startingEnergyValue})"),
                 Optional.Lazy(() => energyStep > 0, $"Energy step must be greater than zero (was {energyStep})"),
                 Optional.Lazy(() => counts != null, "List of counts cannot be null")
             };

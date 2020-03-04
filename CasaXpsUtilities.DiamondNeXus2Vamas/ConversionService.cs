@@ -1,7 +1,7 @@
 ﻿namespace CasaXpsUtilities.DiamondNeXus2Vamas
 {
     using Converters.DiamondScan;
-    using Converters.DiamondScan.Internal;
+    using Converters.DiamondScan.Definitions;
     using Vamas.Internal.Time;
     using Vamas.IO;
     using Xps.Synchrotron.Diamond.Scans.IO;
@@ -30,18 +30,18 @@
         }
 
 
-        public async Task<Option<(string outputDirectoryPath, string outputFilename)>> ConvertAndCreateOutputFile(string conversionDefinitionFilepath)
+        public async Task<Option<(string OutputDirectoryPath, string OutputFilename)>> ConvertAndCreateOutputFile(string conversionDefinitionFilepath)
         {
-            return await ConversionDefinitionReader.Read(conversionDefinitionFilepath).FlatMapAsync(cd => new DiamondNeXus2VamasConverter(new NeXusFileProvider(cd.ScanFilesDirectoryPath), _scanFileReader, _localTimeFactory).Convert(cd).Map(ds => (dataSet: ds, outputDirectoryPath: cd.ScanFilesDirectoryPath)))
+            return await ConversionDefinitionReader.Read(conversionDefinitionFilepath).FlatMapAsync(cd => new DiamondNeXus2VamasConverter(new NeXusFileProvider(cd.ScanFilesDirectoryPath), _scanFileReader, _localTimeFactory).Convert(cd).Map(ds => (DataSet: ds, OutputDirectoryPath: cd.ScanFilesDirectoryPath)))
                                                                                       .FlatMapAsync(async r =>
                                                                                       {
-                                                                                          var outputFilepath = Path.Combine(r.outputDirectoryPath, _outputFilename);
+                                                                                          var outputFilepath = Path.Combine(r.OutputDirectoryPath, _outputFilename);
 
-                                                                                          var writeResult = await _vamasWriter.Write(r.dataSet, outputFilepath);
+                                                                                          var writeResult = await _vamasWriter.Write(r.DataSet, outputFilepath);
 
                                                                                           foreach (var _ in writeResult)
                                                                                           {
-                                                                                              return Optional.Some((r.outputDirectoryPath, outputFilename: _outputFilename));
+                                                                                              return Optional.Some((r.OutputDirectoryPath, OutputFilename: _outputFilename));
                                                                                           }
 
                                                                                           File.Delete(outputFilepath);

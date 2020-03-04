@@ -1,4 +1,4 @@
-﻿namespace CasaXpsUtilities.Converters.DiamondScan.Internal
+﻿namespace CasaXpsUtilities.Converters.DiamondScan.Definitions
 {
     using Xps.Synchrotron.Diamond.Scans;
 

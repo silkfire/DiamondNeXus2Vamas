@@ -1,4 +1,4 @@
-﻿namespace CasaXpsUtilities.Converters.DiamondScan.Internal
+﻿namespace CasaXpsUtilities.Converters.DiamondScan.Definitions
 {
     using Ultimately;
     using Ultimately.Async;
@@ -53,7 +53,7 @@
                             return Optional.None<ConversionDefinition>(Error.Create("First line of the conversion definition file must contain the source file directory"));
                         }
             
-                        sourceFileDirectory = line.Trim('"');
+                        sourceFileDirectory = $"{line.Trim('"').TrimEnd('\\')}\\";
             
                         isFirstLine = false;
                     }

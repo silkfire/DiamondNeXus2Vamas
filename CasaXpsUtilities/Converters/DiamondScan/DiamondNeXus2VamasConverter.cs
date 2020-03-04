@@ -1,6 +1,6 @@
 ﻿namespace CasaXpsUtilities.Converters.DiamondScan
 {
-    using Internal;
+    using Definitions;
     using IO;
     using Vamas;
     using Vamas.Internal.Time;

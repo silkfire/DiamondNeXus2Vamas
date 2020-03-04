@@ -4,18 +4,20 @@
     using NodaTime.Text;
 
     using System;
+    using System.Globalization;
 
 
     public sealed class LocalTime : ILocalTime
     {
-        private static readonly OffsetPattern _offsetPattern = OffsetPattern.CreateWithInvariantCulture("-H");
+        private static readonly OffsetPattern _offsetPatternHours = OffsetPattern.CreateWithInvariantCulture("-H");
+        private static readonly OffsetPattern _offsetPatternMinutes = OffsetPattern.CreateWithInvariantCulture("%m");
 
         private readonly ZonedDateTime _value;
 
 
         public DateTime Value => _value.ToDateTimeUnspecified();
 
-        public string UtcOffset => _offsetPattern.Format(_value.Offset);
+        public string UtcOffset => $"{_offsetPatternHours.Format(_value.Offset)}{(double.Parse(_offsetPatternMinutes.Format(_value.Offset)) / 60).ToString("#.0#", CultureInfo.InvariantCulture)}";
 
 
 
