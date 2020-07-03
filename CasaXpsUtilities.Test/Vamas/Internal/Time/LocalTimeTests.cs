@@ -8,6 +8,7 @@ namespace CasaXpsUtilities.Test.Vamas.Internal.Time
 
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
 
 
     public static class LocalTimeTests
@@ -38,7 +39,7 @@ namespace CasaXpsUtilities.Test.Vamas.Internal.Time
 
 
                 Assert.Equal(localTimeExpected.ToDateTimeUnspecified(), localTimeOutcome.Value);
-                Assert.Equal(OffsetPattern.CreateWithInvariantCulture("-H").Format(localTimeExpected.Offset), localTimeOutcome.UtcOffset);
+                Assert.Equal($"{OffsetPattern.CreateWithInvariantCulture("-H").Format(localTimeExpected.Offset)}{(double.Parse(OffsetPattern.CreateWithInvariantCulture("%m").Format(localTimeExpected.Offset)) / 60).ToString("#.0#", CultureInfo.InvariantCulture)}", localTimeOutcome.UtcOffset);
             }
         }
     }
