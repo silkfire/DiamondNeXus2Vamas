@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CasaXpsUtilities\CasaXpsUtilities.csproj" />
+    <ProjectReference Include="..\..\src\CasaXpsUtilities\CasaXpsUtilities.csproj" />
   </ItemGroup>
 
 </Project>

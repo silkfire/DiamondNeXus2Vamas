@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>CasaXpsUtilities</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DebugType>None</DebugType>
+    <DebugSymbols>False</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LiteHDF" Version="2.0.0" />
+    <PackageReference Include="NodaTime" Version="3.0.3" />
+    <PackageReference Include="Ultimately" Version="2.0.0" />
+  </ItemGroup>
+
+</Project>
