@@ -2,9 +2,8 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <AssemblyName>DiamondNeXus2Vamas</AssemblyName>
     <TargetFramework>netcoreapp5.0</TargetFramework>
-    <RootNamespace>CasaXpsUtilities.DiamondNeXus2Vamas</RootNamespace>
+    <RootNamespace>DiamondNeXus2Vamas</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,8 +20,8 @@
 
   <ItemGroup>
     <PackageReference Include="Grace" Version="7.1.1" />
-    <PackageReference Include="Pastel" Version="2.0.0" />
-    <PackageReference Include="SpanJson" Version="3.0.1" />
+    <PackageReference Include="Pastel" Version="2.1.0" />
+    <PackageReference Include="SpanJson" Version="3.1.0" />
     <PackageReference Include="Ultimately" Version="2.0.0" />
   </ItemGroup>
 

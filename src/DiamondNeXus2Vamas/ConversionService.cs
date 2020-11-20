@@ -1,10 +1,10 @@
-﻿namespace CasaXpsUtilities.DiamondNeXus2Vamas
+﻿namespace DiamondNeXus2Vamas
 {
-    using Converters.DiamondScan;
-    using Converters.DiamondScan.Definitions;
-    using Vamas.Internal.Time;
-    using Vamas.IO;
-    using Xps.Synchrotron.Diamond.Scans.IO;
+    using CasaXpsUtilities.Converters.DiamondScan;
+    using CasaXpsUtilities.Converters.DiamondScan.Definitions;
+    using CasaXpsUtilities.Vamas.Internal.Time;
+    using CasaXpsUtilities.Vamas.IO;
+    using CasaXpsUtilities.Xps.Synchrotron.Diamond.Scans.IO;
 
     using Ultimately;
     using Ultimately.Async;

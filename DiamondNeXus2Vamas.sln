@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.28922.388
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CasaXpsUtilities", "src\CasaXpsUtilities\CasaXpsUtilities.csproj", "{6CBE05D8-9392-48CF-A2EE-B18AC625BD11}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CasaXpsUtilities.DiamondNeXus2Vamas", "src\CasaXpsUtilities.DiamondNeXus2Vamas\CasaXpsUtilities.DiamondNeXus2Vamas.csproj", "{6E1DB35C-9BF0-4F09-8F71-CF75D4F862BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiamondNeXus2Vamas", "src\DiamondNeXus2Vamas\DiamondNeXus2Vamas.csproj", "{6E1DB35C-9BF0-4F09-8F71-CF75D4F862BD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CasaXpsUtilities.Test", "tests\CasaXpsUtilities.Test\CasaXpsUtilities.Test.csproj", "{87C74444-8EE9-46FD-96DD-D6AD7CACBE93}"
 EndProject

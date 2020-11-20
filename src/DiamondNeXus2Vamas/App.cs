@@ -1,4 +1,5 @@
-﻿    using CasaXpsUtilities.DiamondNeXus2Vamas;
+﻿    using DiamondNeXus2Vamas;
+
     using Pastel;
     using Ultimately;
     using Ultimately.Async;

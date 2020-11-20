@@ -1,7 +1,7 @@
-﻿namespace CasaXpsUtilities.DiamondNeXus2Vamas
+﻿namespace DiamondNeXus2Vamas
 {
-    using Shared;
-    using Vamas.IO;
+    using CasaXpsUtilities.Shared;
+    using CasaXpsUtilities.Vamas.IO;
 
     using System;
     using System.Collections.Generic;
@@ -32,7 +32,12 @@
 
             async Task<string> LoadTemplate(string templateName)
             {
-                using var reader = new StreamReader(_scope.Assembly.GetManifestResourceStream(_scope, $"{_sourceDirectory}.{templateName}.vms"));
+                var resourceName = $"{_scope.Assembly.GetName().Name}.{_sourceDirectory}.{templateName}.vms";
+                var resourceInfo = _scope.Assembly.GetManifestResourceInfo(resourceName);
+
+                if (resourceInfo == null) throw new Exception($"Embedded template file not found under the name of '{resourceName}'");
+
+                using var reader = new StreamReader(_scope.Assembly.GetManifestResourceStream(resourceName));
                     return await reader.ReadToEndAsync();
             }
         }

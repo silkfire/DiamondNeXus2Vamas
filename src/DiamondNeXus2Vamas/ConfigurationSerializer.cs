@@ -1,4 +1,4 @@
-﻿namespace CasaXpsUtilities.DiamondNeXus2Vamas
+﻿namespace DiamondNeXus2Vamas
 {
     using SpanJson;
     using SpanJson.Resolvers;

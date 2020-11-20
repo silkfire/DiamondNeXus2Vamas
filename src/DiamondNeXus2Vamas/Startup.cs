@@ -1,8 +1,8 @@
-﻿namespace CasaXpsUtilities.DiamondNeXus2Vamas
+﻿namespace DiamondNeXus2Vamas
 {
-    using Vamas.Internal.Time;
-    using Vamas.IO;
-    using Xps.Synchrotron.Diamond.Scans.IO;
+    using CasaXpsUtilities.Vamas.Internal.Time;
+    using CasaXpsUtilities.Vamas.IO;
+    using CasaXpsUtilities.Xps.Synchrotron.Diamond.Scans.IO;
 
     using Grace.DependencyInjection;
 
