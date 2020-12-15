@@ -27,12 +27,12 @@
 
 
 
-        private Region(string name, ulong creationTimeUnix, double startingEnergyValue, IEnumerable<double> counts, ushort excitationEnergy, double stepTime, double energyStep, string energyMode)
+        private Region(string name, ulong creationTimeUnix, double startingEnergyValue, IReadOnlyList<double> counts, ushort excitationEnergy, double stepTime, double energyStep, string energyMode)
         {
             Name = name;
             CreationTimeUnix = creationTimeUnix;
             StartingEnergyValue = startingEnergyValue;
-            Counts = counts.ToList().AsReadOnly();
+            Counts = counts;
             ExcitationEnergy = excitationEnergy;
             StepTime = stepTime;
             EnergyStep = energyStep;
@@ -55,7 +55,7 @@
 
             return validationRules.Reduce()
                                   .FlatMap(() => counts.ToList().SomeWhen(cc => cc.Count > 0, "List of counts cannot be empty"))
-                                  .Map(cc => new Region(name, creationTimeUnix, startingEnergyValue, cc, excitationEnergy, stepTime, energyStep, energyMode), "Region validation failed");
+                                  .Map(cc => new Region(name, creationTimeUnix, startingEnergyValue, cc.AsReadOnly(), excitationEnergy, stepTime, energyStep, energyMode), "Region validation failed");
         }
 
 

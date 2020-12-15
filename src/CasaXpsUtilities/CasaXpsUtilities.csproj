@@ -8,7 +8,7 @@
   <ItemGroup>
     <PackageReference Include="LiteHDF" Version="2.0.0" />
     <PackageReference Include="NodaTime" Version="3.0.3" />
-    <PackageReference Include="Ultimately" Version="2.0.0" />
+    <PackageReference Include="Ultimately" Version="2.1.0" />
   </ItemGroup>
 
 </Project>

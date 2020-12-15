@@ -31,7 +31,7 @@
 
 
 
-        public Block(string name, string sampleIdentifier, ILocalTime creationTimeLocal, string scanFilepath, string regionName, string species, double startingEnergyValue, double energyStep, IEnumerable<double> counts)
+        private Block(string name, string sampleIdentifier, ILocalTime creationTimeLocal, string scanFilepath, string regionName, string species, double startingEnergyValue, double energyStep, IEnumerable<double> counts)
         {
             Name = name;
             SampleIdentifier = sampleIdentifier;

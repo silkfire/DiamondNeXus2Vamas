@@ -1,13 +1,4 @@
 ﻿namespace DiamondNeXus2Vamas
 {
-    public sealed class Configuration
-    {
-        public string ConversionDefinitionFilepath { get; }
-
-
-        public Configuration(string conversionDefinitionFilepath)
-        {
-            ConversionDefinitionFilepath = conversionDefinitionFilepath;
-        }
-    }
+    public sealed record Configuration(string ConversionDefinitionFilepath);
 }

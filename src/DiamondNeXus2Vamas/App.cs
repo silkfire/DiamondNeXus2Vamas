@@ -69,11 +69,8 @@
             conversionDefinitionFilepath = readLine.Trim('"');
         }
 
-        //var sw = new Stopwatch();
-        //sw.Start();
         var conversionResult = await Startup.Container.Locate<ConversionService>().ConvertAndCreateOutputFile(conversionDefinitionFilepath);
-        //sw.Stop();
-        //Console.WriteLine($"Elapsed time: {(double)sw.ElapsedMilliseconds / 1000:#0.000}s");
+
         await conversionResult.Match(
             some: async cr =>
             {

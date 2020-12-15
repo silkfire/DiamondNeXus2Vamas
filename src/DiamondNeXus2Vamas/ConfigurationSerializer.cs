@@ -66,24 +66,14 @@
 
         private static Configuration Convert(ConfigurationEntity entity)
         {
-            return new Configuration(entity.ConversionDefinitionFilepath);
+            return new(entity.ConversionDefinitionFilepath);
         }
 
         private static ConfigurationEntity Convert(Configuration model)
         {
-            return new ConfigurationEntity(model.ConversionDefinitionFilepath);
+            return new(model.ConversionDefinitionFilepath);
         }
 
-        private class ConfigurationEntity
-        {
-            public string ConversionDefinitionFilepath { get; }
-
-
-            [JsonConstructor]
-            public ConfigurationEntity(string conversionDefinitionFilepath)
-            {
-                ConversionDefinitionFilepath = conversionDefinitionFilepath;
-            }
-        }
+        private record ConfigurationEntity(string ConversionDefinitionFilepath);
     }
 }
