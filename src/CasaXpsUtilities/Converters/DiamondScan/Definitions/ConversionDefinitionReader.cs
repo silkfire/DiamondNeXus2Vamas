@@ -3,7 +3,6 @@
     using Ultimately;
     using Ultimately.Async;
     using Ultimately.Collections;
-    using Ultimately.Reasons;
 
     using System.Collections.Generic;
     using System.IO;
@@ -24,10 +23,9 @@
                                         .FlatMapNone("Failed to read conversion definition file")
                                         .FlatMapAsync(async () =>
                                         {
-                                            using (var fs = new FileStream(filepath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan))
-                                            {
-                                                return await Read(filepath, fs);
-                                            }
+                                            await using var fs = new FileStream(filepath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan);
+
+                                            return await Read(filepath, fs);
                                         });
         }
 
@@ -50,7 +48,7 @@
                     {
                         if (line == "")
                         {
-                            return Optional.None<ConversionDefinition>(Error.Create("First line of the conversion definition file must contain the source file directory"));
+                            return Optional.None<ConversionDefinition>("First line of the conversion definition file must contain the source file directory");
                         }
             
                         sourceFileDirectory = $"{line.Trim('"').TrimEnd('\\')}\\";

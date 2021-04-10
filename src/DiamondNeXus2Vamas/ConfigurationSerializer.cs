@@ -58,7 +58,7 @@
                                             }
                                             catch (Exception e)
                                             {
-                                                return Optional.None(ExceptionalError.Create(e));
+                                                return Optional.None(e);
                                             }
                                         }, "Saving of configuration file failed");
         }

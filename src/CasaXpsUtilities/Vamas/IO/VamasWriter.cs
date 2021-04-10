@@ -66,7 +66,7 @@
                                             }
                                             catch (Exception e)
                                             {
-                                                return Optional.None(ExceptionalError.Create(e));
+                                                return Optional.None(e);
                                             }
 
                                             return Optional.Some(Success.Create("VAMAS data set written to stream successfully"));
