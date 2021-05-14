@@ -6,7 +6,6 @@
     using Ultimately.Collections;
 
     using System;
-    using System.Diagnostics;
     using System.Drawing;
     using System.Runtime.InteropServices;
     using System.Text;
@@ -83,7 +82,7 @@
             },
             none: e =>
             {
-                Console.WriteLine(errorMessageTemplate, e.Print(" → ".Pastel(Color.WhiteSmoke), 0, s => s.Pastel(Color.FromArgb(230, 44, 34))));
+                Console.WriteLine(errorMessageTemplate, e.Print(s => s.Pastel(Color.FromArgb(230, 44, 34)), " → ".Pastel(Color.WhiteSmoke)));
 
                 return Task.CompletedTask;
             }
