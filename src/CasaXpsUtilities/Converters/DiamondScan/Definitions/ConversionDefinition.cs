@@ -60,7 +60,7 @@
 
         public class SampleInformationString
         {
-            private static readonly Regex _parseRegex = new Regex(@"^(\S+)\s+((?:\d+(?:-\d+)?)(?:,\d+(?:-\d+)?)*)(?:\s*?)(?:\s+(\d+))?\s*$");
+            private static readonly Regex _parseRegex = new(@"^(\S+)\s+((?:\d+(?:-\d+)?)(?:,\d+(?:-\d+)?)*)(?:\s*?)(?:\s+(\d+))?\s*$");
 
 
             public string SampleName { get; }

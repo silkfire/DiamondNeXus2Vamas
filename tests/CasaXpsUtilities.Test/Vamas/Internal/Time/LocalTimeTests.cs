@@ -16,11 +16,11 @@ namespace CasaXpsUtilities.Test.Vamas.Internal.Time
         private const string UnixTimeSecondsKeyEpoch = "epoch";
         private const string UnixTimeSecondsKeyNow   = "now";
 
-        private static readonly Dictionary<string, long> _unixTimeSecondsUtc = new Dictionary<string, long>
-        {
-            [UnixTimeSecondsKeyEpoch] = 0L,
-            [UnixTimeSecondsKeyNow]   = DateTimeOffset.Now.ToUnixTimeSeconds()
-        };
+        private static readonly Dictionary<string, long> _unixTimeSecondsUtc = new()
+                                                                               {
+                                                                                  [UnixTimeSecondsKeyEpoch] = 0L,
+                                                                                  [UnixTimeSecondsKeyNow]   = DateTimeOffset.Now.ToUnixTimeSeconds()
+                                                                               };
 
 
         public class Create

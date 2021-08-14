@@ -16,7 +16,7 @@
 
     public class DiamondNeXus2VamasConverter
     {
-        private static readonly Regex _speciesSanitize = new Regex(@"_\d+$");
+        private static readonly Regex _speciesSanitize = new(@"_\d+$");
 
         private readonly IFileProvider _fileProvider;
         private readonly IScanFileReader _scanFileReader;
@@ -39,7 +39,7 @@
 
                 var blocks = new List<Block>();
 
-                foreach (var sampleInformationString in conversionDefinition.SampleInformationStrings)
+                foreach (var sampleInformationString in conversionDefinition!.SampleInformationStrings)
                 {
                     var matchedFilesResult = ScanFile.FilterByRanges(_fileProvider, sampleInformationString.ScanNumberRanges);
 

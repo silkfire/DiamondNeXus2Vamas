@@ -11,7 +11,7 @@
 
     internal static class Startup
     {
-        public static DependencyInjectionContainer Container { get; } = new DependencyInjectionContainer();
+        public static DependencyInjectionContainer Container { get; } = new();
 
 
         static Startup()

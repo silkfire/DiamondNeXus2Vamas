@@ -15,7 +15,7 @@
 
     public class ConversionService
     {
-        private const string _outputFilename = "outputFile.vms";
+        private const string OutputFilename = "outputFile.vms";
 
         private readonly IScanFileReader _scanFileReader;
         private readonly ILocalTimeFactory<ILocalTime> _localTimeFactory;
@@ -35,13 +35,13 @@
             return await ConversionDefinitionReader.Read(conversionDefinitionFilepath).FlatMapAsync(cd => new DiamondNeXus2VamasConverter(new NeXusFileProvider(cd.ScanFilesDirectoryPath), _scanFileReader, _localTimeFactory).Convert(cd).Map(ds => (DataSet: ds, OutputDirectoryPath: cd.ScanFilesDirectoryPath)))
                                                                                       .FlatMapAsync(async r =>
                                                                                       {
-                                                                                          var outputFilepath = Path.Combine(r.OutputDirectoryPath, _outputFilename);
+                                                                                          var outputFilepath = Path.Combine(r.OutputDirectoryPath, OutputFilename);
 
                                                                                           var writeResult = await _vamasWriter.Write(r.DataSet, outputFilepath);
 
                                                                                           foreach (var _ in writeResult)
                                                                                           {
-                                                                                              return Optional.Some((r.OutputDirectoryPath, OutputFilename: _outputFilename));
+                                                                                              return Optional.Some((r.OutputDirectoryPath, OutputFilename));
                                                                                           }
 
                                                                                           File.Delete(outputFilepath);
