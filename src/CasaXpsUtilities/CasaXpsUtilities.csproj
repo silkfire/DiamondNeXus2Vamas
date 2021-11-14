@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>CasaXpsUtilities</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="LiteHDF" Version="2.0.0" />
-    <PackageReference Include="NodaTime" Version="3.0.5" />
+    <PackageReference Include="NodaTime" Version="3.0.9" />
     <PackageReference Include="Ultimately" Version="2.1.1" />
   </ItemGroup>
 
