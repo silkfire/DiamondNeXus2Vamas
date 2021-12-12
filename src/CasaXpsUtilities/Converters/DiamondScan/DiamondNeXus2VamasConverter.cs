@@ -1,6 +1,7 @@
 ﻿namespace CasaXpsUtilities.Converters.DiamondScan
 {
     using Definitions;
+
     using IO;
     using Vamas;
     using Vamas.Internal.Time;
@@ -16,7 +17,7 @@
 
     public class DiamondNeXus2VamasConverter
     {
-        private static readonly Regex _speciesSanitize = new(@"_\d+$");
+        private static readonly Regex _speciesSanitize = new(@"_\d+$", RegexOptions.Compiled);
 
         private readonly IFileProvider _fileProvider;
         private readonly IScanFileReader _scanFileReader;

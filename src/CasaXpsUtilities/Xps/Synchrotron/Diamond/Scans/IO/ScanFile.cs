@@ -17,7 +17,7 @@
     /// </summary>
     public class ScanFile
     {
-        internal static Regex MatchScanNumber => new(@"^i09-(\d+)");
+        internal static Regex MatchScanNumber => new(@"^i09-(\d+)", RegexOptions.Compiled);
 
 
         public string ScanDirectory { get; }

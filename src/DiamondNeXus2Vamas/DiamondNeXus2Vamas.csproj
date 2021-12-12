@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="Grace" Version="7.2.1" />
-    <PackageReference Include="Pastel" Version="2.1.0" />
+    <PackageReference Include="Pastel" Version="3.0.0" />
     <PackageReference Include="SpanJson" Version="3.1.0" />
   </ItemGroup>
 

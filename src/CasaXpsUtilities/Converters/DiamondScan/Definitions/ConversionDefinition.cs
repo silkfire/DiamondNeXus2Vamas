@@ -60,7 +60,7 @@
 
         public class SampleInformationString
         {
-            private static readonly Regex _parseRegex = new(@"^(\S+)\s+((?:\d+(?:-\d+)?)(?:,\d+(?:-\d+)?)*)(?:\s*?)(?:\s+(\d+))?\s*$");
+            private static readonly Regex _parseRegex = new(@"^(\S+)\s+((?:\d+(?:-\d+)?)(?:,\d+(?:-\d+)?)*)(?:\s*?)(?:\s+(\d+))?\s*$", RegexOptions.Compiled);
 
 
             public string SampleName { get; }
@@ -87,7 +87,7 @@
             {
                 return Optional.SomeWhen(scanNumberRanges != null, "List of scan number ranges in sample information string cannot be null").FlatMap(() =>
                 {
-                    var scanNumberRangesList = scanNumberRanges.ToList();
+                    var scanNumberRangesList = scanNumberRanges!.ToList();
 
                     var validationRules = new List<LazyOption>
                     {
@@ -102,10 +102,10 @@
                 });
             }
 
-            public static Option<SampleInformationString> Parse(string @string)
+            public static Option<SampleInformationString> Parse(string conversionDefinitionFileLine)
             {
-                return Optional.SomeWhen(@string != null, "String to parse sample information from cannot be null")
-                               .FlatMap(() => _parseRegex.Match(@string).SomeWhen(m => m.Success, $"Invalid sample information string encountered: {@string.Substring(0, Math.Min(@string.Length, 50))}{(@string.Length > 50 ? "..." : "")}"))
+                return Optional.SomeWhen(conversionDefinitionFileLine != null, "String to parse sample information from cannot be null")
+                               .FlatMap(() => _parseRegex.Match(conversionDefinitionFileLine!).SomeWhen(m => m.Success, $"Invalid sample information string encountered: {conversionDefinitionFileLine[..Math.Min(conversionDefinitionFileLine.Length, 50)]}{(conversionDefinitionFileLine.Length > 50 ? "..." : "")}"))
                                .FlatMap(m =>
                                {
                                    return m.Groups[2].Value.Split(',').Select(rs =>
@@ -118,7 +118,7 @@
                                      {
                                          if (m.Groups[3].Success)
                                          {
-                                             return ParseNumber(TryParse.ToUShort, m.Groups[3].Value, "kinetic energy value").Map(ke => ke.Some(Success.Create("Override excitation energy read from the sample with the specified kinetic energy value")))
+                                             return ParseNumber(TryParse.ToUShort, m.Groups[3].Value, "kinetic energy value").Map(ke => ke.Some("Override excitation energy read from the sample with the specified kinetic energy value"))
                                                                                                                              .FlatMap(ke => Create(m.Groups[1].Value, rr, ke));
                                          }
 
@@ -126,7 +126,7 @@
                                      });
                                }, "Failed to parse sample information string");
 
-                Option<TValue> ParseNumber<TValue>(Func<string, Error, Option<TValue>> parseFunc, string number, string numberClassification)
+                static Option<TValue> ParseNumber<TValue>(Func<string, Error, Option<TValue>> parseFunc, string number, string numberClassification)
                 {
                     return parseFunc(number, $"Provided {numberClassification} too big: {number}");
                 }
