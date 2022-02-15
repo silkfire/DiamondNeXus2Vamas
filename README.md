@@ -1,6 +1,6 @@
 ## Background
 
-This utility quickly converts your DSL (Diamond Light Source) scan files (`.nxs`) into a single VAMAS file (`*.vms`).  
+This utility quickly converts your DLS (Diamond Light Source) scan files (`.nxs`) into a single VAMAS file (`*.vms`).  
 NeXus files are simply [HDF5](https://en.wikipedia.org/wiki/Hierarchical_Data_Format#HDF5) files under the hood and Diamond2NexusConverter uses [LiteHDF](https://github.com/silkfire/LiteHDF) to extract the data.
 
 ## Usage
