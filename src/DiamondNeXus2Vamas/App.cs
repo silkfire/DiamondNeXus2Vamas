@@ -2,7 +2,6 @@
 
     using Pastel;
     using Ultimately;
-    using Ultimately.Async;
     using Ultimately.Collections;
 
     using System;
@@ -25,7 +24,7 @@
     {
         var configurationSerializer = Startup.Container.Locate<ConfigurationSerializer>();
 
-        var configurationReadResult = await configurationSerializer.Read().FlatMapAsync(c => c.SomeWhen(_c => _c != null && !string.IsNullOrWhiteSpace(_c.ConversionDefinitionFilepath), "Definitions filepath is empty"));
+        var configurationReadResult = configurationSerializer.Read().FlatMap(c => c.SomeWhen(_c => _c != null && !string.IsNullOrWhiteSpace(_c.ConversionDefinitionFilepath), "Definitions filepath is empty"));
 
         var cachedDefinitionsFileInfo = "";
 
@@ -65,7 +64,7 @@
         }
         else
         {
-            conversionDefinitionFilepath = readLine.Trim('"');
+            conversionDefinitionFilepath = readLine!.Trim('"');
         }
 
         var conversionResult = await Startup.Container.Locate<ConversionService>().ConvertAndCreateOutputFile(conversionDefinitionFilepath);

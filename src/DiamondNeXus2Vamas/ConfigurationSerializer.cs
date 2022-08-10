@@ -2,6 +2,7 @@
 {
     using SpanJson;
     using SpanJson.Resolvers;
+    using StreamExtensions;
     using Ultimately;
     using Ultimately.Async;
     using Ultimately.Collections;
@@ -26,13 +27,9 @@
         /// <summary>
         /// Reads the configuration file from disk.
         /// </summary>
-        public async Task<Option<Configuration>> Read()
+        public Option<Configuration> Read()
         {
-            return await _configurationLocation.SomeWhen(File.Exists, "Configuration file does not exist").MapAsync(async cl =>
-            {
-                await using var fs = new FileStream(cl, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan);
-                    return Convert(await JsonSerializer.Generic.Utf8.DeserializeAsync<ConfigurationEntity, IncludeNullsCamelCaseResolver<byte>>(fs));
-            });
+            return _configurationLocation.SomeWhen(File.Exists, "Configuration file does not exist").Map(cl => Convert(JsonSerializer.Generic.Utf8.Deserialize<ConfigurationEntity, IncludeNullsCamelCaseResolver<byte>>(StreamExtensions.ReadAllBytes(cl))));
         }
 
         public async Task<Option> SaveAsync(Configuration configuration)
