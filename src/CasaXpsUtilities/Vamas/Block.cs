@@ -8,7 +8,6 @@
     using System.Collections.Generic;
     using System.Linq;
 
-
     public class Block
     {
         public string Name { get; }
@@ -27,9 +26,7 @@
 
         public double EnergyStep { get; }
 
-        public IReadOnlyList<double> Counts { get; }
-
-
+        public IReadOnlyCollection<double> Counts { get; }
 
         private Block(string name, string sampleIdentifier, ILocalTime creationTimeLocal, string scanFilepath, string regionName, string species, double startingEnergyValue, double energyStep, IEnumerable<double> counts)
         {

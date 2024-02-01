@@ -4,7 +4,6 @@
 
     using System.Collections.Generic;
 
-
     /// <summary>
     /// Represents a service to retrieve a list of filenames.
     /// </summary>

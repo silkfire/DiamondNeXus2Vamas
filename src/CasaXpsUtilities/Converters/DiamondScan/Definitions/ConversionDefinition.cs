@@ -13,20 +13,15 @@
     using System.Linq;
     using System.Text.RegularExpressions;
 
-
-    public class ConversionDefinition
+    public partial class ConversionDefinition
     {
         public string Filename { get; }
 
         public string Filepath { get; }
 
-
         public string ScanFilesDirectoryPath { get; }
 
         public IReadOnlyList<SampleInformationString> SampleInformationStrings { get; }
-
-
-        public override string ToString() => $"CONVERSION DEFINITION: '{Filename}'";
 
 
         private ConversionDefinition(string filepath, string scanFilesDirectoryPath, IEnumerable<SampleInformationString> sampleInformationStrings)
@@ -38,7 +33,7 @@
             SampleInformationStrings = sampleInformationStrings.ToList().AsReadOnly();
         }
 
-        public static Option<ConversionDefinition> Create(string filepath, string scanFilesDirectoryPath, IEnumerable<SampleInformationString> sampleInformationStrings)
+        public static Option<ConversionDefinition> Create(string filepath, string scanFilesDirectoryPath, IEnumerable<SampleInformationString>? sampleInformationStrings)
         {
             var validationRules = new List<LazyOption>
             {
@@ -50,7 +45,7 @@
             return validationRules.Reduce()
                                   .FlatMap(() =>
                                   {
-                                      var sampleInformationStringList = sampleInformationStrings.ToList();
+                                      var sampleInformationStringList = sampleInformationStrings!.ToList();
 
                                       return sampleInformationStringList.SomeWhen(siss => siss.Count > 0, "Definition must contain at least one sample information string");
                                   })
@@ -58,10 +53,10 @@
         }
 
 
-        public class SampleInformationString
+        public partial class SampleInformationString
         {
-            private static readonly Regex _parseRegex = new(@"^(\S+)\s+((?:\d+(?:-\d+)?)(?:,\d+(?:-\d+)?)*)(?:\s*?)(?:\s+(\d+))?\s*$", RegexOptions.Compiled);
-
+            [GeneratedRegex("""^(\S+)\s+((?:\d+(?:-\d+)?)(?:,\d+(?:-\d+)?)*)(?:\s*?)(?:\s+(\d+))?\s*$""", RegexOptions.Compiled)]
+            private static partial Regex ParseRegex();
 
             public string SampleName { get; }
 
@@ -75,7 +70,6 @@
                 return $"{string.Join(", ", ScanNumberRanges)}{KineticEnergy.Match(ke => $" | {ke}", _ => "")}";
             }
 
-
             private SampleInformationString(string sampleName, IEnumerable<ScanNumberRange> scanNumberRanges, Option<ushort> kineticEnergy)
             {
                 SampleName = sampleName;
@@ -83,7 +77,7 @@
                 KineticEnergy = kineticEnergy;
             }
 
-            public static Option<SampleInformationString> Create(string sampleName, IEnumerable<ScanNumberRange> scanNumberRanges, Option<ushort> kineticEnergy)
+            public static Option<SampleInformationString> Create(string sampleName, IEnumerable<ScanNumberRange>? scanNumberRanges, Option<ushort> kineticEnergy)
             {
                 return Optional.SomeWhen(scanNumberRanges != null, "List of scan number ranges in sample information string cannot be null").FlatMap(() =>
                 {
@@ -102,10 +96,10 @@
                 });
             }
 
-            public static Option<SampleInformationString> Parse(string conversionDefinitionFileLine)
+            public static Option<SampleInformationString> Parse(string? conversionDefinitionFileLine)
             {
                 return Optional.SomeWhen(conversionDefinitionFileLine != null, "String to parse sample information from cannot be null")
-                               .FlatMap(() => _parseRegex.Match(conversionDefinitionFileLine!).SomeWhen(m => m.Success, $"Invalid sample information string encountered: {conversionDefinitionFileLine[..Math.Min(conversionDefinitionFileLine.Length, 50)]}{(conversionDefinitionFileLine.Length > 50 ? "..." : "")}"))
+                               .FlatMap(() => ParseRegex().Match(conversionDefinitionFileLine!).SomeWhen(m => m.Success, $"Invalid sample information string encountered: {conversionDefinitionFileLine![..Math.Min(conversionDefinitionFileLine!.Length, 50)]}{(conversionDefinitionFileLine.Length > 50 ? "..." : "")}"))
                                .FlatMap(m =>
                                {
                                    return m.Groups[2].Value.Split(',').Select(rs =>
@@ -132,5 +126,7 @@
                 }
             }
         }
+
+        public override string ToString() => $"CONVERSION DEFINITION: '{Filename}'";
     }
 }

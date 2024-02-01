@@ -2,7 +2,6 @@
 {
     using System;
 
-
     /// <summary>
     /// Represents a local time and exposes a property that represents its offset from UTC as a formatted string.
     /// </summary>

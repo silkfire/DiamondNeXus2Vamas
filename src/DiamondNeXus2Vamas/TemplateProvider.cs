@@ -5,39 +5,36 @@
 
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.IO;
+    using System.Reflection;
     using System.Threading.Tasks;
-
 
     public class TemplateProvider : ITemplateProvider
     {
-        private readonly Type _scope;
+        private readonly Assembly _entryAssembly;
         private readonly string _sourceDirectory;
 
-        public TemplateProvider(Type scope, string sourceDirectory)
+        public TemplateProvider(Assembly entryAssembly, string sourceDirectory)
         {
-            _scope = scope;
+            _entryAssembly = entryAssembly;
             _sourceDirectory = sourceDirectory;
         }
 
         public LazyAsync<IReadOnlyDictionary<string, string>> GetTemplates()
         {
-            return new LazyAsync<IReadOnlyDictionary<string, string>>(async () => new ReadOnlyDictionary<string, string>(new Dictionary<string, string>
+            return new LazyAsync<IReadOnlyDictionary<string, string>>(async () => new Dictionary<string, string>
             {
                 ["FILE_HEADER"] = await LoadTemplate("FileHeader"),
                 ["BLOCK"]       = await LoadTemplate("Block"),
                 ["FILE_FOOTER"] = await LoadTemplate("FileFooter")
-            }));
+            }.AsReadOnly());
 
             async Task<string> LoadTemplate(string templateName)
             {
-                var resourceName = $"{_scope.Assembly.GetName().Name}.{_sourceDirectory}.{templateName}.vms";
-                var resourceInfo = _scope.Assembly.GetManifestResourceInfo(resourceName);
+                var resourceName = $"{_entryAssembly.GetName().Name}.{_sourceDirectory}.{templateName}.vms";
+                _ = _entryAssembly.GetManifestResourceInfo(resourceName) ?? throw new InvalidOperationException($"Embedded template file not found under the name of '{resourceName}'");
 
-                if (resourceInfo == null) throw new Exception($"Embedded template file not found under the name of '{resourceName}'");
-
-                using var reader = new StreamReader(_scope.Assembly.GetManifestResourceStream(resourceName));
+                using var reader = new StreamReader(_entryAssembly.GetManifestResourceStream(resourceName)!);
                     return await reader.ReadToEndAsync();
             }
         }

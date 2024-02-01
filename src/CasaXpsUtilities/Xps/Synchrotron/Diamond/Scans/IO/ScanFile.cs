@@ -11,14 +11,13 @@
     using System.Linq;
     using System.Text.RegularExpressions;
 
-
     /// <summary>
     /// Represents a Diamond beamline scan file.
     /// </summary>
-    public class ScanFile
+    public partial class ScanFile
     {
-        internal static Regex MatchScanNumber => new(@"^i09-(\d+)", RegexOptions.Compiled);
-
+        [GeneratedRegex("""^i09-(\d+)""", RegexOptions.Compiled)]
+        internal static partial Regex MatchScanNumberRegex();
 
         public string ScanDirectory { get; }
 
@@ -26,10 +25,7 @@
 
         public uint Number { get; }
 
-
         public string Filepath => $"{ScanDirectory}/{Filename}";
-
-
 
         private ScanFile(string scanDirectory, string filename, uint number)
         {
@@ -38,28 +34,26 @@
             Number = number;
         }
 
-
-   
         public static Option<ScanFile> Create(string filepath, uint number)
         {
-            return NotEmptyFilepath(filepath).Map(() => new ScanFile(Path.GetDirectoryName(filepath), Path.GetFileName(filepath), number));
+            return NotEmptyFilepath(filepath).Map(() => new ScanFile(Path.GetDirectoryName(filepath)!, Path.GetFileName(filepath), number));
         }
 
         public static Option<ScanFile> Create(string filepath)
         {
             return NotEmptyFilepath(filepath).Map(() => Path.GetFileName(filepath))
-                                             .FlatMap(fn => MatchScanNumber.Match(fn).SomeWhen(m => m.Success, $"Could not parse scan number from filename '{fn}'")
-                                                                                     .Map(m => new
-                                                                                         {
-                                                                                             Filename = fn,
-                                                                                             Match = m
-                                                                                         }))
+                                             .FlatMap(fn => MatchScanNumberRegex().Match(fn).SomeWhen(m => m.Success, $"Could not parse scan number from filename '{fn}'")
+                                                                                            .Map(m => new
+                                                                                            {
+                                                                                                Filename = fn,
+                                                                                                Match = m
+                                                                                            }))
                                              .FlatMap(m => TryParse.ToUInt(m.Match.Groups[1].Value, $"Parsed scan number too big. Filename: '{m.Filename}'").Map(sn => new
-                                                                                                                                                                {
-                                                                                                                                                                    m.Filename,
-                                                                                                                                                                    Number = sn
-                                                                                                                                                                }))
-                                             .Map(sf => new ScanFile(Path.GetDirectoryName(filepath), sf.Filename, sf.Number));
+                                                                                                                                                             {
+                                                                                                                                                                 m.Filename,
+                                                                                                                                                                 Number = sn
+                                                                                                                                                             }))
+                                             .Map(sf => new ScanFile(Path.GetDirectoryName(filepath)!, sf.Filename, sf.Number));
         }
 
 
@@ -69,7 +63,7 @@
             return Optional.SomeWhen(!string.IsNullOrWhiteSpace(filepath), "Filepath to scan cannot be empty");
         }
 
-        public static Option<IReadOnlyList<ScanFile>> FilterByRanges(IFileProvider scanFileProvider, IEnumerable<ScanNumberRange> scanNumberRanges)
+        public static Option<IReadOnlyList<ScanFile>> FilterByRanges(IFileProvider? scanFileProvider, IEnumerable<ScanNumberRange>? scanNumberRanges)
         {
             var validationRules = new List<LazyOption>
             {
@@ -78,11 +72,11 @@
             };
 
             return validationRules.Reduce()
-                                  .FlatMap(() => scanFileProvider.GetFiles().Filter(sfps => sfps != null, "List of scan files to filter cannot be null"))
+                                  .FlatMap(() => scanFileProvider!.GetFiles().Filter(sfps => sfps != null, "List of scan files to filter cannot be null"))
                                   .FlatMap(sfps => sfps.Select(Create).Transform(sf => sf))
                                   .FlatMap(sfs =>
                                   {
-                                      var scanNumberRangesList = scanNumberRanges.ToList();
+                                      var scanNumberRangesList = scanNumberRanges!.ToList();
 
                                       return Optional.SomeWhen(sfs.Count > 0, "List of scan files to filter cannot be empty")
                                                      .FlatMap(() => Optional.SomeWhen(scanNumberRangesList.Count > 0, "List of scan number ranges to match against cannot be empty"))
@@ -91,8 +85,6 @@
                                                                    .AsReadOnly() as IReadOnlyList<ScanFile>);
                                   });
         }
-
-
 
         public override string ToString() => Filename;
     }

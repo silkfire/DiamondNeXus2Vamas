@@ -14,17 +14,14 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-
     public class VamasWriter
     {
         private readonly LazyAsync<IReadOnlyDictionary<string, string>> _templates;
-
 
         public VamasWriter(ITemplateProvider templateProvider)
         {
             _templates = templateProvider.GetTemplates();
         }
-
 
         public async Task<Option> Write(VamasDataSet dataSet, string destinationFilepath)
         {

@@ -8,7 +8,6 @@
     using System.IO;
     using System.Threading.Tasks;
 
-
     public class ConversionDefinitionReader
     {
         public static async Task<Option<ConversionDefinition>> Read(string filepath)
@@ -31,16 +30,14 @@
 
         public static async Task<Option<ConversionDefinition>> Read(string filepath, Stream stream)
         {
-            string sourceFileDirectory = null;
+            string sourceFileDirectory = null!;
             var sampleInformationStrings = new List<ConversionDefinition.SampleInformationString>();
 
-            using (var sr  = new StreamReader(stream))
+            using (var sr = new StreamReader(stream))
             {
                 var isFirstLine = true;
-            
-                string line;
-            
-                while ((line = await sr.ReadLineAsync())!= null)
+
+                while (await sr.ReadLineAsync() is { } line)
                 {
                     line = line.Trim();
             

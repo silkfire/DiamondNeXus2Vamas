@@ -4,12 +4,10 @@
     {
         private readonly string _timeZoneId;
 
-
         public LocalTimeFactory(string timeZoneId)
         {
             _timeZoneId = timeZoneId;
         }
-
 
         public LocalTime Create(ulong unixTimeSeconds)
         {

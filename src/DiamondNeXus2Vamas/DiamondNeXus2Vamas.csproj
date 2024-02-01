@@ -2,8 +2,9 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <RootNamespace>DiamondNeXus2Vamas</RootNamespace>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,9 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Grace" Version="7.2.1" />
-    <PackageReference Include="Pastel" Version="4.1.0" />
-    <PackageReference Include="SpanJson" Version="4.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Pastel" Version="5.0.0" />
+    <PackageReference Include="SpanJson" Version="4.0.1" />
     <PackageReference Include="StreamExtensions" Version="3.0.0" />
   </ItemGroup>
 

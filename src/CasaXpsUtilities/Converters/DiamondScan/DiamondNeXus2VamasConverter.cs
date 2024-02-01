@@ -14,10 +14,10 @@
     using System.IO;
     using System.Text.RegularExpressions;
 
-
-    public class DiamondNeXus2VamasConverter
+    public partial class DiamondNeXus2VamasConverter
     {
-        private static readonly Regex _speciesSanitize = new(@"_\d+$", RegexOptions.Compiled);
+        [GeneratedRegex("""_\d+$""", RegexOptions.Compiled)]
+        private static partial Regex SpeciesSanitizeRegex();
 
         private readonly IFileProvider _fileProvider;
         private readonly IScanFileReader _scanFileReader;
@@ -29,7 +29,6 @@
             _scanFileReader = scanFileReader;
             _localTimeFactory = localTimeFactory;
         }
-
 
         public Option<VamasDataSet> Convert(ConversionDefinition conversionDefinition)
         {
@@ -64,11 +63,7 @@
                                             var regionName = region.Name;
                                             var measurementIdentifier = $"{sampleIdentifier}-{regionName}";
                                             
-                                            if (!measurementIdentifiers.ContainsKey(measurementIdentifier))
-                                            {
-                                                measurementIdentifiers[measurementIdentifier] = 0;
-                                            }
-                                            else
+                                            if (!measurementIdentifiers.TryAdd(measurementIdentifier, 0))
                                             {
                                                 regionName = $"{regionName}-{++measurementIdentifiers[measurementIdentifier]}";
                                             }
@@ -78,7 +73,7 @@
                                                                                    _localTimeFactory.Create(region.CreationTimeUnix),
                                                                                    scanFile.Filepath,
                                                                                    regionName,
-                                                                                   regionName.StartsWith("Survey") ? "Survey" : _speciesSanitize.Replace(regionName, ""),
+                                                                                   regionName.StartsWith("Survey") ? "Survey" : SpeciesSanitizeRegex().Replace(regionName, ""),
                                                                                    region.StartingEnergyValue,
                                                                                    region.EnergyStep,
                                                                                    region.Counts);

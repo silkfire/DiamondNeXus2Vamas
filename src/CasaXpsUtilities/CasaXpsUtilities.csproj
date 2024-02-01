@@ -1,13 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <RootNamespace>CasaXpsUtilities</RootNamespace>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LiteHDF" Version="3.0.0" />
-    <PackageReference Include="NodaTime" Version="3.1.9" />
+    <PackageReference Include="LiteHDF.win-x64" Version="4.0.0" />
+    <PackageReference Include="NodaTime" Version="3.1.10" />
     <PackageReference Include="Ultimately" Version="3.0.0" />
   </ItemGroup>
 

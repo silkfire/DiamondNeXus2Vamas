@@ -6,24 +6,22 @@
     using System.Collections.Generic;
     using System.Linq;
 
-
     public class VamasDataSet
     {
         public string Name { get; }
 
-        public IReadOnlyList<string> SampleIdentifiers { get; }
+        public IReadOnlyCollection<string> SampleIdentifiers { get; }
 
-        public IReadOnlyList<Block> Blocks { get; }
+        public IReadOnlyCollection<Block> Blocks { get; }
 
-
-        private VamasDataSet(string name, HashSet<string> sampleIdentifiers, IEnumerable<Block> blocks)
+        private VamasDataSet(string name, IReadOnlySet<string> sampleIdentifiers, IEnumerable<Block> blocks)
         {
             Name = name;
             SampleIdentifiers = sampleIdentifiers.ToList().AsReadOnly();
             Blocks = blocks.ToList().AsReadOnly();
         }
 
-        public static Option<VamasDataSet> Create(string name, HashSet<string> sampleIdentifiers, IEnumerable<Block> blocks)
+        public static Option<VamasDataSet> Create(string name, IReadOnlySet<string> sampleIdentifiers, IEnumerable<Block> blocks)
         {
             var validations = new List<LazyOption>
             {

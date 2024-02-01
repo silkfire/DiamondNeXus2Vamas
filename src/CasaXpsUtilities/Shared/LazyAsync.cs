@@ -4,7 +4,6 @@
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
 
-
     // https://devblogs.microsoft.com/pfxteam/asynclazyt/
 
     public sealed class LazyAsync<T> : Lazy<Task<T>>
