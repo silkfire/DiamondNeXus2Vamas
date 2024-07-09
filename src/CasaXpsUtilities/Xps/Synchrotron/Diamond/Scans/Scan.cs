@@ -24,7 +24,7 @@
         /// </summary>
         public ScanFile File { get; set; }
 
-        public IReadOnlyList<Region> Regions => _regions;
+        public IReadOnlyCollection<Region> Regions => _regions;
 
 
         private Scan(ScanFile file, List<Region> regions)

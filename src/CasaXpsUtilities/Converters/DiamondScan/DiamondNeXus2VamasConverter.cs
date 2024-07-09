@@ -32,81 +32,77 @@
 
         public Option<VamasDataSet> Convert(ConversionDefinition conversionDefinition)
         {
-            return Optional.SomeWhen(conversionDefinition != null, "Conversion definition cannot be null").FlatMap(() =>
+            var sampleIdentifiers = new HashSet<string>();
+            var measurementIdentifiers = new Dictionary<string, int>();
+
+            var blocks = new List<Block>();
+
+            foreach (var sampleInformationString in conversionDefinition.SampleInformationStrings)
             {
-                var sampleIdentifiers = new HashSet<string>();
-                var measurementIdentifiers = new Dictionary<string, int>();
+                var matchedFilesResult = ScanFile.FilterByRanges(_fileProvider, sampleInformationString.ScanNumberRanges);
 
-                var blocks = new List<Block>();
-
-                foreach (var sampleInformationString in conversionDefinition!.SampleInformationStrings)
+                if (matchedFilesResult.HasValue)
                 {
-                    var matchedFilesResult = ScanFile.FilterByRanges(_fileProvider, sampleInformationString.ScanNumberRanges);
-
-                    if (matchedFilesResult.HasValue)
+                    foreach (var (matchedFiles, _) in matchedFilesResult)
                     {
-                        foreach (var (matchedFiles, _) in matchedFilesResult)
+                        foreach (var scanFile in matchedFiles)
                         {
-                            foreach (var scanFile in matchedFiles)
+                            var scanReadResult = _scanFileReader.Read(scanFile);
+                            if (scanReadResult.HasValue)
                             {
-                                var scanReadResult = _scanFileReader.Read(scanFile);
-
-                                if (scanReadResult.HasValue)
+                                foreach (var (scan, _) in scanReadResult)
                                 {
-                                    foreach (var (scan, _) in scanReadResult)
+                                    foreach (var region in scan.Regions)
                                     {
-                                        foreach (var region in scan.Regions)
+                                        var sampleIdentifier = $"{sampleInformationString.KineticEnergy.Match(ke => $"{ke}KE", _ => region.ExcitationEnergy.ToString())}-{sampleInformationString.SampleName}";
+                                        sampleIdentifiers.Add(sampleIdentifier);
+
+                                        var regionName = region.Name;
+                                        var measurementIdentifier = $"{sampleIdentifier}-{regionName}";
+                                        
+                                        if (!measurementIdentifiers.TryAdd(measurementIdentifier, 0))
                                         {
-                                            var sampleIdentifier = $"{sampleInformationString.KineticEnergy.Match(ke => $"{ke}KE", _ => region.ExcitationEnergy.ToString())}-{sampleInformationString.SampleName}";
-                                            sampleIdentifiers.Add(sampleIdentifier);
+                                            regionName = $"{regionName}-{++measurementIdentifiers[measurementIdentifier]}";
+                                        }
 
-                                            var regionName = region.Name;
-                                            var measurementIdentifier = $"{sampleIdentifier}-{regionName}";
-                                            
-                                            if (!measurementIdentifiers.TryAdd(measurementIdentifier, 0))
-                                            {
-                                                regionName = $"{regionName}-{++measurementIdentifiers[measurementIdentifier]}";
-                                            }
+                                        var blockCreationResult = Block.Create(FormatBlockName(region.StepTime, scan.Number, regionName),
+                                                                               sampleIdentifier,
+                                                                               _localTimeFactory.Create(region.CreationTimeUnix),
+                                                                               scanFile.Filepath,
+                                                                               regionName,
+                                                                               regionName.StartsWith("Survey") ? "Survey" : SpeciesSanitizeRegex().Replace(regionName, ""),
+                                                                               region.StartingEnergyValue,
+                                                                               region.EnergyStep,
+                                                                               region.Counts);
 
-                                            var blockCreationResult = Block.Create(FormatBlockName(region.StepTime, scan.Number, regionName),
-                                                                                   sampleIdentifier,
-                                                                                   _localTimeFactory.Create(region.CreationTimeUnix),
-                                                                                   scanFile.Filepath,
-                                                                                   regionName,
-                                                                                   regionName.StartsWith("Survey") ? "Survey" : SpeciesSanitizeRegex().Replace(regionName, ""),
-                                                                                   region.StartingEnergyValue,
-                                                                                   region.EnergyStep,
-                                                                                   region.Counts);
-
-                                            if (blockCreationResult.HasValue)
+                                        if (blockCreationResult.HasValue)
+                                        {
+                                            foreach (var (block, _) in blockCreationResult)
                                             {
-                                                foreach (var (block, _) in blockCreationResult)
-                                                {
-                                                    blocks.Add(block);
-                                                }
+                                                blocks.Add(block);
                                             }
-                                            else
-                                            {
-                                                return Optional.None<Block, VamasDataSet>(blockCreationResult);
-                                            }
+                                        }
+                                        else
+                                        {
+                                            return Optional.None<Block, VamasDataSet>(blockCreationResult);
                                         }
                                     }
                                 }
-                                else
-                                {
-                                    return Optional.None<Scan, VamasDataSet>(scanReadResult);
-                                }
+                            }
+                            else
+                            {
+                                return Optional.None<Scan, VamasDataSet>(scanReadResult);
                             }
                         }
                     }
-                    else
-                    {
-                        return Optional.None<IReadOnlyList<ScanFile>, VamasDataSet>(matchedFilesResult);
-                    }
                 }
+                else
+                {
+                    return Optional.None<IReadOnlyCollection<ScanFile>, VamasDataSet>(matchedFilesResult);
+                }
+            }
 
-                return VamasDataSet.Create(new DirectoryInfo(conversionDefinition.ScanFilesDirectoryPath).Name, sampleIdentifiers, blocks);
-            });
+            return VamasDataSet.Create(new DirectoryInfo(conversionDefinition.ScanFilesDirectoryPath).Name, sampleIdentifiers, blocks);
         }
 
         private static string FormatBlockName(double stepTime, uint scanNumber, string regionName)

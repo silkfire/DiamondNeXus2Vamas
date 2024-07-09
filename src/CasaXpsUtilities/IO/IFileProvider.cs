@@ -12,6 +12,6 @@
         /// <summary>
         /// Retrieves a read-only list of filenames.
         /// </summary>
-        Option<IReadOnlyList<string>> GetFiles();
+        Option<IReadOnlyCollection<string>> GetFiles();
     }
 }

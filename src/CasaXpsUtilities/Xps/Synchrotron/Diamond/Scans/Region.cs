@@ -14,7 +14,7 @@
 
         public double StartingEnergyValue { get; }
 
-        public IReadOnlyList<double> Counts { get; }
+        public IReadOnlyCollection<double> Counts { get; }
 
         public ushort ExcitationEnergy { get; }
 
@@ -22,7 +22,7 @@
 
         public double EnergyStep { get; }
 
-        private Region(string name, ulong creationTimeUnix, double startingEnergyValue, IReadOnlyList<double> counts, ushort excitationEnergy, double stepTime, double energyStep)
+        private Region(string name, ulong creationTimeUnix, double startingEnergyValue, IReadOnlyCollection<double> counts, ushort excitationEnergy, double stepTime, double energyStep)
         {
             Name = name;
             CreationTimeUnix = creationTimeUnix;

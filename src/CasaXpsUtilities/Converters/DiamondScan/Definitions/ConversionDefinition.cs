@@ -21,7 +21,7 @@
 
         public string ScanFilesDirectoryPath { get; }
 
-        public IReadOnlyList<SampleInformationString> SampleInformationStrings { get; }
+        public IReadOnlyCollection<SampleInformationString> SampleInformationStrings { get; }
 
 
         private ConversionDefinition(string filepath, string scanFilesDirectoryPath, IEnumerable<SampleInformationString> sampleInformationStrings)
@@ -60,7 +60,7 @@
 
             public string SampleName { get; }
 
-            public IReadOnlyList<ScanNumberRange> ScanNumberRanges { get; }
+            public IReadOnlyCollection<ScanNumberRange> ScanNumberRanges { get; }
 
             public Option<ushort> KineticEnergy { get; }
 

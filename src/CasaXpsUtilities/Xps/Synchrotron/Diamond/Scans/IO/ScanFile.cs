@@ -63,7 +63,7 @@
             return Optional.SomeWhen(!string.IsNullOrWhiteSpace(filepath), "Filepath to scan cannot be empty");
         }
 
-        public static Option<IReadOnlyList<ScanFile>> FilterByRanges(IFileProvider? scanFileProvider, IEnumerable<ScanNumberRange>? scanNumberRanges)
+        public static Option<IReadOnlyCollection<ScanFile>> FilterByRanges(IFileProvider? scanFileProvider, IEnumerable<ScanNumberRange>? scanNumberRanges)
         {
             var validationRules = new List<LazyOption>
             {
@@ -82,7 +82,7 @@
                                                      .FlatMap(() => Optional.SomeWhen(scanNumberRangesList.Count > 0, "List of scan number ranges to match against cannot be empty"))
                                                      .Map(() => sfs.Where(sf => scanNumberRangesList.Any(sn => sf.Number >= sn.StartingValue && sf.Number <= sn.FinalValue))
                                                                    .ToList()
-                                                                   .AsReadOnly() as IReadOnlyList<ScanFile>);
+                                                                   .AsReadOnly() as IReadOnlyCollection<ScanFile>);
                                   });
         }
 

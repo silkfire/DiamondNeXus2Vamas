@@ -21,8 +21,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
-    <PackageReference Include="Pastel" Version="5.0.0" />
-    <PackageReference Include="SpanJson" Version="4.0.1" />
+    <PackageReference Include="Pastel" Version="5.1.0" />
+    <PackageReference Include="SpanJson" Version="4.1.0" />
     <PackageReference Include="StreamExtensions" Version="3.0.0" />
   </ItemGroup>
 

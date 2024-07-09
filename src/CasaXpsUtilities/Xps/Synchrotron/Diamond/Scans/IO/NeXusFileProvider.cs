@@ -8,22 +8,14 @@
     using System.IO;
     using System.Linq;
 
-
-    public class NeXusFileProvider : IFileProvider
+    public class NeXusFileProvider(string sourceFileDirectoryPath) : IFileProvider
     {
-        private readonly string _sourceFileDirectoryPath;
+        private readonly string _sourceFileDirectoryPath = sourceFileDirectoryPath;
 
-
-        public NeXusFileProvider(string sourceFileDirectoryPath)
+        public Option<IReadOnlyCollection<string>> GetFiles()
         {
-            _sourceFileDirectoryPath = sourceFileDirectoryPath;
-        }
-
-
-        public Option<IReadOnlyList<string>> GetFiles()
-        {
-            return Optional.SomeWhen(Directory.Exists(_sourceFileDirectoryPath), $"Specified source file directory '{_sourceFileDirectoryPath}' does not exist")
-                           .Map(() => Directory.GetFiles(_sourceFileDirectoryPath, "*.nxs").ToList().AsReadOnly() as IReadOnlyList<string>);
+            return Optional.SomeWhen(Directory.Exists(_sourceFileDirectoryPath), $"Source file directory '{_sourceFileDirectoryPath}' specified in the definition file does not exist")
+                           .Map(() => Directory.GetFiles(_sourceFileDirectoryPath, "*.nxs").ToList().AsReadOnly() as IReadOnlyCollection<string>);
         }
     }
 }
