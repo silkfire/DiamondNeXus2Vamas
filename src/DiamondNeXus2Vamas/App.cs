@@ -27,18 +27,18 @@ var defaultMessagePrefix = $"\r\n{"[".Pastel(bracketColour)}{"CasaXpsUtilities".
 var errorMessageTemplate = $"{defaultMessagePrefix}{"ERROR".Pastel(Color.White).PastelBg(Color.FromArgb(222, 54, 26))} {{0}}";
 
 var builder = Host.CreateApplicationBuilder();
-builder.Services.AddSingleton(_ => new ConfigurationSerializer(Path.Combine(Directory.GetCurrentDirectory(), "config.json")))
-                .AddSingleton(_ => new ConversionService(new NeXusReader(), new LocalTimeFactory("Europe/London"), new VamasWriter(new TemplateProvider(Assembly.GetEntryAssembly()!, "Templates"))));
+builder.Services.AddSingleton(new ConfigurationSerializer(Path.Combine(Directory.GetCurrentDirectory(), "config.json")))
+                .AddSingleton(new ConversionService(new NeXusReader(), new LocalTimeFactory("Europe/London"), new VamasWriter(new TemplateProvider(Assembly.GetEntryAssembly()!, "Templates"))));
 
 var host = builder.Build();
 
-                                    
+
 
 try
 {
     var configurationSerializer = host.Services.GetRequiredService<ConfigurationSerializer>();
 
-    var configurationReadResult = configurationSerializer.Read().FlatMap(c => c.SomeWhen(_c => _c != null && !string.IsNullOrWhiteSpace(_c.ConversionDefinitionFilepath), "Definitions filepath is empty"));
+    var configurationReadResult = configurationSerializer.Read().FlatMap(c => c.SomeWhen(cc => cc != null && !string.IsNullOrWhiteSpace(cc.ConversionDefinitionFilepath), "Definitions filepath is empty"));
 
     var cachedDefinitionsFileInfo = "";
 
@@ -74,7 +74,7 @@ try
         // Move caret up one step and write on the previous line (due to the user having pressed ENTER - looks more neat)
         // http://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html
 
-        Console.Write("\u001b[1A");
+        Console.Write("\e[1A");
     }
     else
     {

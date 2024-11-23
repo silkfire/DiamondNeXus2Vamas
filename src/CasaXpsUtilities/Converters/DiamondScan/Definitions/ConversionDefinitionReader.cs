@@ -40,16 +40,16 @@
                 while (await sr.ReadLineAsync() is { } line)
                 {
                     line = line.Trim();
-            
+
                     if (isFirstLine)
                     {
                         if (line == "")
                         {
                             return Optional.None<ConversionDefinition>("First line of the conversion definition file must contain the source file directory");
                         }
-            
+
                         sourceFileDirectory = $"{line.Trim('"').TrimEnd('\\')}\\";
-            
+
                         isFirstLine = false;
                     }
                     else
@@ -57,17 +57,17 @@
                         if (line == "")
                         {
                             // Skip empty lines
-            
+
                             continue;
                         }
-            
+
                         var sampleInformationStringResult = ConversionDefinition.SampleInformationString.Parse(line);
-            
+
                         foreach (var (sampleInformationString, _) in sampleInformationStringResult)
                         {
                              sampleInformationStrings.Add(sampleInformationString);
                         }
-            
+
                         if (!sampleInformationStringResult.HasValue)
                         {
                             return Optional.None<ConversionDefinition.SampleInformationString, ConversionDefinition>(sampleInformationStringResult);
@@ -75,7 +75,7 @@
                     }
                 }
             }
-            
+
             return ConversionDefinition.Create(filepath, sourceFileDirectory, sampleInformationStrings);
         }
     }

@@ -59,7 +59,7 @@
 
                                         var regionName = region.Name;
                                         var measurementIdentifier = $"{sampleIdentifier}-{regionName}";
-                                        
+
                                         if (!measurementIdentifiers.TryAdd(measurementIdentifier, 0))
                                         {
                                             regionName = $"{regionName}-{++measurementIdentifiers[measurementIdentifier]}";
