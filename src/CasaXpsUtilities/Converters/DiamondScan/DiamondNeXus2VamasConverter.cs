@@ -17,7 +17,7 @@
     public partial class DiamondNeXus2VamasConverter
     {
         [GeneratedRegex("""_\d+$""", RegexOptions.Compiled)]
-        private static partial Regex SpeciesSanitizeRegex();
+        private static partial Regex SpeciesSanitization { get; }
 
         private readonly IFileProvider _fileProvider;
         private readonly IScanFileReader _scanFileReader;
@@ -70,7 +70,7 @@
                                                                                _localTimeFactory.Create(region.CreationTimeUnix),
                                                                                scanFile.Filepath,
                                                                                regionName,
-                                                                               regionName.StartsWith("Survey") ? "Survey" : SpeciesSanitizeRegex().Replace(regionName, ""),
+                                                                               regionName.StartsWith("Survey") ? "Survey" : SpeciesSanitization.Replace(regionName, ""),
                                                                                region.StartingEnergyValue,
                                                                                region.EnergyStep,
                                                                                region.Counts);

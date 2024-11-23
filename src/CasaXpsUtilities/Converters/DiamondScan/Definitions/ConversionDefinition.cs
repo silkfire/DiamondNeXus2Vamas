@@ -52,11 +52,10 @@
                                   .Map(siss => new ConversionDefinition(filepath, scanFilesDirectoryPath, siss), "Conversion definition validation failed");
         }
 
-
         public partial class SampleInformationString
         {
             [GeneratedRegex("""^(\S+)\s+((?:\d+(?:-\d+)?)(?:,\d+(?:-\d+)?)*)(?:\s*?)(?:\s+(\d+))?\s*$""", RegexOptions.Compiled)]
-            private static partial Regex ParseRegex();
+            private static partial Regex Parts { get; }
 
             public string SampleName { get; }
 
@@ -99,7 +98,7 @@
             public static Option<SampleInformationString> Parse(string? conversionDefinitionFileLine)
             {
                 return Optional.SomeWhen(conversionDefinitionFileLine != null, "String to parse sample information from cannot be null")
-                               .FlatMap(() => ParseRegex().Match(conversionDefinitionFileLine!).SomeWhen(m => m.Success, $"Invalid sample information string encountered: {conversionDefinitionFileLine![..Math.Min(conversionDefinitionFileLine!.Length, 50)]}{(conversionDefinitionFileLine.Length > 50 ? "..." : "")}"))
+                               .FlatMap(() => Parts.Match(conversionDefinitionFileLine!).SomeWhen(m => m.Success, $"Invalid sample information string encountered: {conversionDefinitionFileLine![..Math.Min(conversionDefinitionFileLine!.Length, 50)]}{(conversionDefinitionFileLine.Length > 50 ? "..." : "")}"))
                                .FlatMap(m =>
                                {
                                    return m.Groups[2].Value.Split(',').Select(rs =>

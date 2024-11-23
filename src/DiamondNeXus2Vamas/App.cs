@@ -26,7 +26,7 @@ var defaultMessagePrefix = $"\r\n{"[".Pastel(bracketColour)}{"CasaXpsUtilities".
 
 var errorMessageTemplate = $"{defaultMessagePrefix}{"ERROR".Pastel(Color.White).PastelBg(Color.FromArgb(222, 54, 26))} {{0}}";
 
-var builder = new HostApplicationBuilder();
+var builder = Host.CreateApplicationBuilder();
 builder.Services.AddSingleton(_ => new ConfigurationSerializer(Path.Combine(Directory.GetCurrentDirectory(), "config.json")))
                 .AddSingleton(_ => new ConversionService(new NeXusReader(), new LocalTimeFactory("Europe/London"), new VamasWriter(new TemplateProvider(Assembly.GetEntryAssembly()!, "Templates"))));
 

@@ -16,11 +16,11 @@ namespace CasaXpsUtilities.Test.Vamas.Internal.Time
         private const string UnixTimeSecondsKeyEpoch = "epoch";
         private const string UnixTimeSecondsKeyNow   = "now";
 
-        private static readonly Dictionary<string, long> _unixTimeSecondsUtc = new()
-                                                                               {
-                                                                                  [UnixTimeSecondsKeyEpoch] = 0L,
-                                                                                  [UnixTimeSecondsKeyNow]   = DateTimeOffset.Now.ToUnixTimeSeconds()
-                                                                               };
+        private static readonly Dictionary<string, long> s_unixTimeSecondsUtc = new()
+                                                                                {
+                                                                                   [UnixTimeSecondsKeyEpoch] = 0L,
+                                                                                   [UnixTimeSecondsKeyNow]   = DateTimeOffset.Now.ToUnixTimeSeconds()
+                                                                                };
 
 
         public class Create
@@ -32,9 +32,9 @@ namespace CasaXpsUtilities.Test.Vamas.Internal.Time
             [InlineData("Europe/Stockholm", UnixTimeSecondsKeyNow)]
             public void Should_return_local_time_with_specified_value_and_offset_utc_offset_string(string timeZoneId, string unixTimeSecondsKey)
             {
-                var localTimeExpected = Instant.FromUnixTimeSeconds(_unixTimeSecondsUtc[unixTimeSecondsKey]).InZone(DateTimeZoneProviders.Tzdb[timeZoneId]);
+                var localTimeExpected = Instant.FromUnixTimeSeconds(s_unixTimeSecondsUtc[unixTimeSecondsKey]).InZone(DateTimeZoneProviders.Tzdb[timeZoneId]);
 
-                var localTimeOutcome = LocalTime.Create((ulong)_unixTimeSecondsUtc[unixTimeSecondsKey], timeZoneId);
+                var localTimeOutcome = LocalTime.Create((ulong)s_unixTimeSecondsUtc[unixTimeSecondsKey], timeZoneId);
 
                 Assert.Equal(localTimeExpected.ToDateTimeUnspecified(), localTimeOutcome.Value);
                 Assert.Equal($"{OffsetPattern.CreateWithInvariantCulture("-H").Format(localTimeExpected.Offset)}{(double.Parse(OffsetPattern.CreateWithInvariantCulture("%m").Format(localTimeExpected.Offset)) / 60).ToString("#.0#", CultureInfo.InvariantCulture)}", localTimeOutcome.UtcOffset);
