@@ -1,21 +1,20 @@
-﻿namespace CasaXpsUtilities.Shared
+﻿namespace CasaXpsUtilities.Shared;
+
+using System;
+using System.Diagnostics.CodeAnalysis;
+
+// https://stackoverflow.com/a/30664665/633098
+
+public sealed class LazyDisposable<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]T> : Lazy<T>, IDisposable
+    where T : IDisposable
 {
-    using System;
-    using System.Diagnostics.CodeAnalysis;
+    public LazyDisposable(Func<T> valueFactory) : base(valueFactory) { }
 
-    // https://stackoverflow.com/a/30664665/633098
-
-    public sealed class LazyDisposable<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]T> : Lazy<T>, IDisposable
-        where T : IDisposable
+    public void Dispose()
     {
-        public LazyDisposable(Func<T> valueFactory) : base(valueFactory) { }
-
-        public void Dispose()
+        if (IsValueCreated)
         {
-            if (IsValueCreated)
-            {
-                Value.Dispose();
-            }
+            Value.Dispose();
         }
     }
 }

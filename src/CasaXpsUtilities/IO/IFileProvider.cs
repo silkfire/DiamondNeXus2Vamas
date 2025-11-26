@@ -1,17 +1,16 @@
-﻿namespace CasaXpsUtilities.IO
+﻿namespace CasaXpsUtilities.IO;
+
+using Ultimately;
+
+using System.Collections.ObjectModel;
+
+/// <summary>
+/// Provides file paths.
+/// </summary>
+public interface IFileProvider
 {
-    using Ultimately;
-
-    using System.Collections.Generic;
-
     /// <summary>
-    /// Represents a service to retrieve a list of filenames.
+    /// Retrieves the file paths.
     /// </summary>
-    public interface IFileProvider
-    {
-        /// <summary>
-        /// Retrieves a read-only list of filenames.
-        /// </summary>
-        Option<IReadOnlyCollection<string>> GetFiles();
-    }
+    Option<ReadOnlyCollection<string>> GetFiles();
 }

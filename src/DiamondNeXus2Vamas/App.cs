@@ -28,7 +28,7 @@ var errorMessageTemplate = $"{defaultMessagePrefix}{"ERROR".Pastel(Color.White).
 
 var builder = Host.CreateApplicationBuilder();
 builder.Services.AddSingleton(new ConfigurationSerializer(Path.Combine(Directory.GetCurrentDirectory(), "config.json")))
-                .AddSingleton(new ConversionService(new NeXusReader(), new LocalTimeFactory("Europe/London"), new VamasWriter(new TemplateProvider(Assembly.GetEntryAssembly()!, "Templates"))));
+                .AddSingleton(new ConversionService(new NeXusReader(), new NodaTimeLocalTimeFactory("Europe/London"), new VamasWriter(new TemplateProvider(Assembly.GetEntryAssembly()!, "Templates"))));
 
 var host = builder.Build();
 
@@ -38,7 +38,7 @@ try
 {
     var configurationSerializer = host.Services.GetRequiredService<ConfigurationSerializer>();
 
-    var configurationReadResult = configurationSerializer.Read().FlatMap(c => c.SomeWhen(cc => cc != null && !string.IsNullOrWhiteSpace(cc.ConversionDefinitionFilepath), "Definitions filepath is empty"));
+    var configurationReadResult = configurationSerializer.Read().FlatMap(c => c.SomeWhen(cc => cc != null && !string.IsNullOrWhiteSpace(cc.ConversionDefinitionFilepath), "Definitions file path is empty"));
 
     var cachedDefinitionsFileInfo = "";
 
@@ -95,7 +95,7 @@ try
         },
         none: e =>
         {
-            Console.WriteLine(errorMessageTemplate, e.Print(s => s.Pastel(Color.FromArgb(230, 44, 34)), " → ".Pastel(Color.WhiteSmoke)));
+            Console.WriteLine(errorMessageTemplate, e.Print(s => s.Pastel(Color.FromArgb(230, 44, 34)), 0, " → ".Pastel(Color.WhiteSmoke)));
 
             return Task.CompletedTask;
         }

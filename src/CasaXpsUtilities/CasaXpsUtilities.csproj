@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LiteHDF.win-x64" Version="4.0.0" />
-    <PackageReference Include="NodaTime" Version="3.2.0" />
-    <PackageReference Include="Ultimately" Version="3.0.0" />
+    <PackageReference Include="LiteHDF.win-x64" Version="5.0.0" />
+    <PackageReference Include="NodaTime" Version="3.2.2" />
+    <PackageReference Include="Ultimately" Version="4.0.0" />
   </ItemGroup>
 
 </Project>

@@ -1,14 +1,19 @@
-﻿namespace CasaXpsUtilities.Vamas.Internal.Time
+﻿namespace CasaXpsUtilities.Vamas.Internal.Time;
+
+using System;
+
+/// <summary>
+/// Represents a local time and exposes a property that represents its offset from UTC as a formatted string.
+/// </summary>
+public interface ILocalTime
 {
-    using System;
+    /// <summary>
+    /// Gets the local date and time value.
+    /// </summary>
+    DateTime Value { get; }
 
     /// <summary>
-    /// Represents a local time and exposes a property that represents its offset from UTC as a formatted string.
+    /// Gets the UTC offset as a formatted string.
     /// </summary>
-    public interface ILocalTime
-    {
-        DateTime Value { get; }
-
-        string UtcOffset { get; }
-    }
+    string UtcOffset { get; }
 }

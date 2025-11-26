@@ -1,53 +1,45 @@
-﻿namespace DiamondNeXus2Vamas
+﻿namespace DiamondNeXus2Vamas;
+
+using CasaXpsUtilities.Converters.DiamondScan;
+using CasaXpsUtilities.Converters.DiamondScan.Definitions;
+using CasaXpsUtilities.Vamas.Internal.Time;
+using CasaXpsUtilities.Vamas.IO;
+using CasaXpsUtilities.Xps.Synchrotron.Diamond.Scans.IO;
+
+using Ultimately;
+using Ultimately.Async;
+
+using System.IO;
+using System.Threading.Tasks;
+
+/// <summary>
+/// Service for converting Diamond Light Source NeXus scan files to VAMAS format.
+/// </summary>
+public class ConversionService(IScanFileReader scanFileReader, ILocalTimeFactory<ILocalTime> localTimeFactory, VamasWriter vamasWriter)
 {
-    using CasaXpsUtilities.Converters.DiamondScan;
-    using CasaXpsUtilities.Converters.DiamondScan.Definitions;
-    using CasaXpsUtilities.Vamas.Internal.Time;
-    using CasaXpsUtilities.Vamas.IO;
-    using CasaXpsUtilities.Xps.Synchrotron.Diamond.Scans.IO;
+    private const string OutputFilename = "outputFile.vms";
 
-    using Ultimately;
-    using Ultimately.Async;
-
-    using System.IO;
-    using System.Threading.Tasks;
-
-
-    public class ConversionService
+    /// <summary>
+    /// Converts NeXus scan files to VAMAS format based on the specified conversion definition.
+    /// </summary>
+    /// <param name="conversionDefinitionFilePath">The file path to the conversion definition file.</param>
+    public async Task<Option<(string OutputDirectoryPath, string OutputFilename)>> ConvertAndCreateOutputFile(string conversionDefinitionFilePath)
     {
-        private const string OutputFilename = "outputFile.vms";
+        return await ConversionDefinitionReader.Read(conversionDefinitionFilePath).FlatMapAsync(cd => new DiamondNeXus2VamasConverter(new NeXusFileProvider(cd.ScanFilesDirectoryPath), scanFileReader, localTimeFactory).Convert(cd).Map(ds => (DataSet: ds, OutputDirectoryPath: cd.ScanFilesDirectoryPath)))
+                                               .FlatMapAsync(async r =>
+                                               {
+                                                   var outputFilepath = Path.Combine(r.OutputDirectoryPath, OutputFilename);
 
-        private readonly IScanFileReader _scanFileReader;
-        private readonly ILocalTimeFactory<ILocalTime> _localTimeFactory;
-        private readonly VamasWriter _vamasWriter;
+                                                   var writeResult = await vamasWriter.Write(r.DataSet, outputFilepath);
 
+                                                   foreach (var _ in writeResult)
+                                                   {
+                                                       return Optional.Some((r.OutputDirectoryPath, OutputFilename));
+                                                   }
 
-        public ConversionService(IScanFileReader scanFileReader, ILocalTimeFactory<ILocalTime> localTimeFactory, VamasWriter vamasWriter)
-        {
-            _scanFileReader = scanFileReader;
-            _localTimeFactory = localTimeFactory;
-            _vamasWriter = vamasWriter;
-        }
+                                                   File.Delete(outputFilepath);
 
-
-        public async Task<Option<(string OutputDirectoryPath, string OutputFilename)>> ConvertAndCreateOutputFile(string conversionDefinitionFilepath)
-        {
-            return await ConversionDefinitionReader.Read(conversionDefinitionFilepath).FlatMapAsync(cd => new DiamondNeXus2VamasConverter(new NeXusFileProvider(cd.ScanFilesDirectoryPath), _scanFileReader, _localTimeFactory).Convert(cd).Map(ds => (DataSet: ds, OutputDirectoryPath: cd.ScanFilesDirectoryPath)))
-                                                                                      .FlatMapAsync(async r =>
-                                                                                      {
-                                                                                          var outputFilepath = Path.Combine(r.OutputDirectoryPath, OutputFilename);
-
-                                                                                          var writeResult = await _vamasWriter.Write(r.DataSet, outputFilepath);
-
-                                                                                          foreach (var _ in writeResult)
-                                                                                          {
-                                                                                              return Optional.Some((r.OutputDirectoryPath, OutputFilename));
-                                                                                          }
-
-                                                                                          File.Delete(outputFilepath);
-
-                                                                                          return Optional.None<(string outputDirectoryPath, string outputFilename)>(writeResult);
-                                                                                      }, "Conversion operation failed");
-        }
+                                                   return Optional.None<(string outputDirectoryPath, string outputFilename)>(writeResult);
+                                               }, "Conversion operation failed");
     }
 }

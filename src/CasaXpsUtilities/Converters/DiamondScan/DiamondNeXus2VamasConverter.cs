@@ -1,115 +1,119 @@
-﻿namespace CasaXpsUtilities.Converters.DiamondScan
+﻿namespace CasaXpsUtilities.Converters.DiamondScan;
+
+using Definitions;
+using Shared;
+
+using IO;
+using Vamas;
+using Vamas.Internal.Time;
+using Xps.Synchrotron.Diamond.Scans;
+using Xps.Synchrotron.Diamond.Scans.IO;
+
+using Ultimately;
+
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Text.RegularExpressions;
+
+/// <summary>
+/// Converts NeXus scan files to VAMAS format.
+/// </summary>
+/// <param name="fileProvider">The file provider for accessing scan files.</param>
+/// <param name="scanFileReader">The scan file reader for reading NeXus scan files.</param>
+/// <param name="localTimeFactory">The factory for creating local time instances.</param>
+public partial class DiamondNeXus2VamasConverter(IFileProvider fileProvider, IScanFileReader scanFileReader, ILocalTimeFactory<ILocalTime> localTimeFactory)
 {
-    using Definitions;
+    [GeneratedRegex("""_\d+$""", RegexOptions.Compiled)]
+    private static partial Regex SpeciesSanitization { get; }
 
-    using IO;
-    using Vamas;
-    using Vamas.Internal.Time;
-    using Xps.Synchrotron.Diamond.Scans;
-    using Xps.Synchrotron.Diamond.Scans.IO;
+    private readonly IFileProvider _fileProvider = fileProvider;
+    private readonly IScanFileReader _scanFileReader = scanFileReader;
+    private readonly ILocalTimeFactory<ILocalTime> _localTimeFactory = localTimeFactory;
 
-    using Ultimately;
-
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Text.RegularExpressions;
-
-    public partial class DiamondNeXus2VamasConverter
+    /// <summary>
+    /// Converts NeXus scan files to a VAMAS data set based on the provided conversion definition.
+    /// </summary>
+    /// <param name="conversionDefinition">The conversion definition.</param>
+    public Option<VamasDataSet> Convert(ConversionDefinition conversionDefinition)
     {
-        [GeneratedRegex("""_\d+$""", RegexOptions.Compiled)]
-        private static partial Regex SpeciesSanitization { get; }
+        var sampleIdentifiers = new OrderedSetExt<string>();
+        var measurementIdentifiers = new Dictionary<string, int>();
 
-        private readonly IFileProvider _fileProvider;
-        private readonly IScanFileReader _scanFileReader;
-        private readonly ILocalTimeFactory<ILocalTime> _localTimeFactory;
+        var blocks = new List<Block>();
 
-        public DiamondNeXus2VamasConverter(IFileProvider fileProvider, IScanFileReader scanFileReader, ILocalTimeFactory<ILocalTime> localTimeFactory)
+        foreach (var sampleInformationString in conversionDefinition.SampleInformationStrings)
         {
-            _fileProvider = fileProvider;
-            _scanFileReader = scanFileReader;
-            _localTimeFactory = localTimeFactory;
-        }
+            var matchedFilesResult = ScanFile.FilterByRanges(_fileProvider, sampleInformationString.ScanNumberRanges);
 
-        public Option<VamasDataSet> Convert(ConversionDefinition conversionDefinition)
-        {
-            var sampleIdentifiers = new HashSet<string>();
-            var measurementIdentifiers = new Dictionary<string, int>();
-
-            var blocks = new List<Block>();
-
-            foreach (var sampleInformationString in conversionDefinition.SampleInformationStrings)
+            if (matchedFilesResult.HasValue)
             {
-                var matchedFilesResult = ScanFile.FilterByRanges(_fileProvider, sampleInformationString.ScanNumberRanges);
-
-                if (matchedFilesResult.HasValue)
+                foreach (var (matchedFiles, _) in matchedFilesResult)
                 {
-                    foreach (var (matchedFiles, _) in matchedFilesResult)
+                    foreach (var scanFile in matchedFiles)
                     {
-                        foreach (var scanFile in matchedFiles)
+                        var scanReadResult = _scanFileReader.Read(scanFile);
+                        if (scanReadResult.HasValue)
                         {
-                            var scanReadResult = _scanFileReader.Read(scanFile);
-                            if (scanReadResult.HasValue)
+                            foreach (var (scan, _) in scanReadResult)
                             {
-                                foreach (var (scan, _) in scanReadResult)
+                                foreach (var region in scan.Regions)
                                 {
-                                    foreach (var region in scan.Regions)
+                                    var sampleIdentifier = $"{sampleInformationString.KineticEnergy.Match(ke => $"{ke}KE", _ => region.ExcitationEnergy.ToString())}-{sampleInformationString.SampleName}";
+                                    sampleIdentifiers.Add(sampleIdentifier);
+
+                                    var regionName = region.Name;
+                                    var measurementIdentifier = $"{sampleIdentifier}-{regionName}";
+
+                                    if (!measurementIdentifiers.TryAdd(measurementIdentifier, 0))
                                     {
-                                        var sampleIdentifier = $"{sampleInformationString.KineticEnergy.Match(ke => $"{ke}KE", _ => region.ExcitationEnergy.ToString())}-{sampleInformationString.SampleName}";
-                                        sampleIdentifiers.Add(sampleIdentifier);
+                                        regionName = $"{regionName}-{++measurementIdentifiers[measurementIdentifier]}";
+                                    }
 
-                                        var regionName = region.Name;
-                                        var measurementIdentifier = $"{sampleIdentifier}-{regionName}";
+                                    var blockCreationResult = Block.Create(FormatBlockName(region.StepTime, scan.Number, regionName),
+                                                                           sampleIdentifier,
+                                                                           _localTimeFactory.Create(region.CreationTimeUnix),
+                                                                           scanFile.FilePath,
+                                                                           regionName,
+                                                                           regionName.StartsWith("Survey") ? "Survey" : SpeciesSanitization.Replace(regionName, ""),
+                                                                           region.StartingEnergyValue,
+                                                                           region.EnergyStep,
+                                                                           region.Counts);
 
-                                        if (!measurementIdentifiers.TryAdd(measurementIdentifier, 0))
+                                    if (blockCreationResult.HasValue)
+                                    {
+                                        foreach (var (block, _) in blockCreationResult)
                                         {
-                                            regionName = $"{regionName}-{++measurementIdentifiers[measurementIdentifier]}";
+                                            blocks.Add(block);
                                         }
-
-                                        var blockCreationResult = Block.Create(FormatBlockName(region.StepTime, scan.Number, regionName),
-                                                                               sampleIdentifier,
-                                                                               _localTimeFactory.Create(region.CreationTimeUnix),
-                                                                               scanFile.Filepath,
-                                                                               regionName,
-                                                                               regionName.StartsWith("Survey") ? "Survey" : SpeciesSanitization.Replace(regionName, ""),
-                                                                               region.StartingEnergyValue,
-                                                                               region.EnergyStep,
-                                                                               region.Counts);
-
-                                        if (blockCreationResult.HasValue)
-                                        {
-                                            foreach (var (block, _) in blockCreationResult)
-                                            {
-                                                blocks.Add(block);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            return Optional.None<Block, VamasDataSet>(blockCreationResult);
-                                        }
+                                    }
+                                    else
+                                    {
+                                        return Optional.None<Block, VamasDataSet>(blockCreationResult);
                                     }
                                 }
                             }
-                            else
-                            {
-                                return Optional.None<Scan, VamasDataSet>(scanReadResult);
-                            }
+                        }
+                        else
+                        {
+                            return Optional.None<Scan, VamasDataSet>(scanReadResult);
                         }
                     }
                 }
-                else
-                {
-                    return Optional.None<IReadOnlyCollection<ScanFile>, VamasDataSet>(matchedFilesResult);
-                }
             }
-
-            return VamasDataSet.Create(new DirectoryInfo(conversionDefinition.ScanFilesDirectoryPath).Name, sampleIdentifiers, blocks);
+            else
+            {
+                return Optional.None<ReadOnlyCollection<ScanFile>, VamasDataSet>(matchedFilesResult);
+            }
         }
 
-        private static string FormatBlockName(double stepTime, uint scanNumber, string regionName)
-        {
-            const double stepTimeFrameRatio = 0.058823529411764705;
+        return VamasDataSet.Create(new DirectoryInfo(conversionDefinition.ScanFilesDirectoryPath).Name, sampleIdentifiers, blocks);
+    }
 
-            return $"[{System.Convert.ToByte(stepTime / stepTimeFrameRatio)}] {scanNumber}-{regionName}";
-        }
+    private static string FormatBlockName(double stepTime, uint scanNumber, string regionName)
+    {
+        const double stepTimeFrameRatio = 1 / 17D;
+
+        return $"[{System.Convert.ToByte(stepTime / stepTimeFrameRatio)}] {scanNumber}-{regionName}";
     }
 }
