@@ -132,7 +132,7 @@ public class NeXusReader : IScanFileReader
                            );
                 }
             }
-        };
+        }
 
         return outcome.FlatMap(() => Scan.Create(scanFile, regions));
     }

@@ -38,7 +38,7 @@ try
 {
     var configurationSerializer = host.Services.GetRequiredService<ConfigurationSerializer>();
 
-    var configurationReadResult = configurationSerializer.Read().FlatMap(c => c.SomeWhen(cc => cc != null && !string.IsNullOrWhiteSpace(cc.ConversionDefinitionFilepath), "Definitions file path is empty"));
+    var configurationReadResult = configurationSerializer.Read().FlatMap(c => c.SomeWhen(cc => cc != null && !string.IsNullOrWhiteSpace(cc.ConversionDefinitionFilePath), "Definitions file path is empty"));
 
     var cachedDefinitionsFileInfo = "";
 
@@ -62,13 +62,13 @@ try
 
     var readLine = Console.ReadLine();
 
-    string conversionDefinitionFilepath = null!;
+    string conversionDefinitionFilePath = null!;
 
     if (readLine == "")
     {
         foreach (var (configuration, _) in configurationReadResult)
         {
-            conversionDefinitionFilepath = configuration.ConversionDefinitionFilepath;
+            conversionDefinitionFilePath = configuration.ConversionDefinitionFilePath;
         }
 
         // Move caret up one step and write on the previous line (due to the user having pressed ENTER - looks more neat)
@@ -78,19 +78,19 @@ try
     }
     else
     {
-        conversionDefinitionFilepath = readLine!.Trim('"');
+        conversionDefinitionFilePath = readLine!.Trim('"');
     }
 
-    var conversionResult = await host.Services.GetRequiredService<ConversionService>().ConvertAndCreateOutputFile(conversionDefinitionFilepath);
+    var conversionResult = await host.Services.GetRequiredService<ConversionService>().ConvertAndCreateOutputFile(conversionDefinitionFilePath);
 
     await conversionResult.Match(
         some: async cr =>
         {
             Console.WriteLine($"{defaultMessagePrefix}Generated VAMAS file has been saved to {$"{cr.OutputDirectoryPath}".Pastel(Color.MediumSeaGreen)}{cr.OutputFilename.Pastel(Color.MediumSpringGreen)}.");
 
-            if (!configurationReadResult.Exists(c => c.ConversionDefinitionFilepath == conversionDefinitionFilepath))
+            if (!configurationReadResult.Exists(c => c.ConversionDefinitionFilePath == conversionDefinitionFilePath))
             {
-                await configurationSerializer.SaveAsync(new Configuration(conversionDefinitionFilepath));
+                await configurationSerializer.SaveAsync(new Configuration(conversionDefinitionFilePath));
             }
         },
         none: e =>

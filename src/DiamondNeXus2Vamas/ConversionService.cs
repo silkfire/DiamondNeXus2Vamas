@@ -28,16 +28,16 @@ public class ConversionService(IScanFileReader scanFileReader, ILocalTimeFactory
         return await ConversionDefinitionReader.Read(conversionDefinitionFilePath).FlatMapAsync(cd => new DiamondNeXus2VamasConverter(new NeXusFileProvider(cd.ScanFilesDirectoryPath), scanFileReader, localTimeFactory).Convert(cd).Map(ds => (DataSet: ds, OutputDirectoryPath: cd.ScanFilesDirectoryPath)))
                                                .FlatMapAsync(async r =>
                                                {
-                                                   var outputFilepath = Path.Combine(r.OutputDirectoryPath, OutputFilename);
+                                                   var outputFilePath = Path.Combine(r.OutputDirectoryPath, OutputFilename);
 
-                                                   var writeResult = await vamasWriter.Write(r.DataSet, outputFilepath);
+                                                   var writeResult = await vamasWriter.Write(r.DataSet, outputFilePath);
 
                                                    foreach (var _ in writeResult)
                                                    {
                                                        return Optional.Some((r.OutputDirectoryPath, OutputFilename));
                                                    }
 
-                                                   File.Delete(outputFilepath);
+                                                   File.Delete(outputFilePath);
 
                                                    return Optional.None<(string outputDirectoryPath, string outputFilename)>(writeResult);
                                                }, "Conversion operation failed");

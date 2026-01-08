@@ -26,10 +26,10 @@ public class VamasWriter(ITemplateProvider templateProvider)
     /// Writes a VAMAS data set to a file.
     /// </summary>
     /// <param name="dataSet">The VAMAS data set to write.</param>
-    /// <param name="destinationFilepath">The file path to write the VAMAS data set to.</param>
-    public async Task<Option> Write(VamasDataSet dataSet, string destinationFilepath)
+    /// <param name="destinationFilePath">The file path to write the VAMAS data set to.</param>
+    public async Task<Option> Write(VamasDataSet dataSet, string destinationFilePath)
     {
-        await using var fs = new FileStream(destinationFilepath, FileMode.Create, FileAccess.Write, FileShare.Read, 4096, FileOptions.Asynchronous);
+        await using var fs = new FileStream(destinationFilePath, FileMode.Create, FileAccess.Write, FileShare.Read, 4096, FileOptions.Asynchronous);
 
         return await Write(dataSet, fs).FlatMapNoneAsync("Failed to save VAMAS file");
     }

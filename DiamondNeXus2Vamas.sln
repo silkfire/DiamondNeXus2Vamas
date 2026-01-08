@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11217.181 d18.0
+VisualStudioVersion = 18.0.11217.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CasaXpsUtilities", "src\CasaXpsUtilities\CasaXpsUtilities.csproj", "{6CBE05D8-9392-48CF-A2EE-B18AC625BD11}"
 EndProject

@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LiteHDF.win-x64" Version="5.0.0" />
-    <PackageReference Include="NodaTime" Version="3.2.2" />
+    <PackageReference Include="LiteHDF.win-x64" Version="5.1.0" />
+    <PackageReference Include="NodaTime" Version="3.3.0" />
     <PackageReference Include="Ultimately" Version="4.0.0" />
   </ItemGroup>
 

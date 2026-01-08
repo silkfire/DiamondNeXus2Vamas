@@ -36,7 +36,7 @@ public class ConfigurationSerializer
         var validationRules = new List<LazyOption>
                               {
                                   Optional.Lazy(() => configuration != null,                                                  "Configuration object cannot be null"),
-                                  Optional.Lazy(() => !string.IsNullOrWhiteSpace(configuration!.ConversionDefinitionFilepath), "Conversion definition file path cannot be empty")
+                                  Optional.Lazy(() => !string.IsNullOrWhiteSpace(configuration!.ConversionDefinitionFilePath), "Conversion definition file path cannot be empty")
                               };
 
         return await validationRules.Reduce()
@@ -62,13 +62,13 @@ public class ConfigurationSerializer
 
     private static Configuration Convert(ConfigurationEntity entity)
     {
-        return new Configuration(entity.ConversionDefinitionFilepath);
+        return new Configuration(entity.ConversionDefinitionFilePath);
     }
 
     private static ConfigurationEntity Convert(Configuration model)
     {
-        return new ConfigurationEntity(model.ConversionDefinitionFilepath);
+        return new ConfigurationEntity(model.ConversionDefinitionFilePath);
     }
 
-    private record ConfigurationEntity(string ConversionDefinitionFilepath);
+    private record ConfigurationEntity(string ConversionDefinitionFilePath);
 }
