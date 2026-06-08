@@ -1,7 +1,5 @@
 ﻿namespace DiamondNeXus2Vamas;
 
-using SpanJson;
-using SpanJson.Resolvers;
 using StreamExtensions;
 using Ultimately;
 using Ultimately.Async;
@@ -11,16 +9,23 @@ using Ultimately.Reasons;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
 
-public class ConfigurationSerializer
+public class ConfigurationSerializer(string configurationLocation)
 {
-    private readonly string _configurationLocation;
+    private static readonly JsonSerializerOptions s_serializerOptions;
+
+    private readonly string _configurationLocation = configurationLocation;
 
 
-    public ConfigurationSerializer(string configurationLocation)
+    static ConfigurationSerializer()
     {
-        _configurationLocation = configurationLocation;
+        s_serializerOptions = new JsonSerializerOptions
+                              {
+                                  PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                              };
+        s_serializerOptions.MakeReadOnly(true);
     }
 
     /// <summary>
@@ -28,7 +33,7 @@ public class ConfigurationSerializer
     /// </summary>
     public Option<Configuration> Read()
     {
-        return _configurationLocation.SomeWhen(File.Exists, "Configuration file does not exist").Map(cl => Convert(JsonSerializer.Generic.Utf8.Deserialize<ConfigurationEntity, IncludeNullsCamelCaseResolver<byte>>(StreamExtensions.ReadAllBytes(cl))));
+        return _configurationLocation.SomeWhen(File.Exists, "Configuration file does not exist").Map(cl => Convert(JsonSerializer.Deserialize<ConfigurationEntity>(StreamExtensions.ReadAllBytes(cl), s_serializerOptions)!));
     }
 
     public async Task<Option> SaveAsync(Configuration? configuration)
@@ -46,8 +51,9 @@ public class ConfigurationSerializer
                                         try
                                         {
                                             await using var fs = new FileStream(_configurationLocation, FileMode.Create, FileAccess.Write, FileShare.Write, 4096, FileOptions.Asynchronous);
+                                            
                                             {
-                                                await JsonSerializer.Generic.Utf8.SerializeAsync<ConfigurationEntity, IncludeNullsCamelCaseResolver<byte>>(ce, fs);
+                                                await JsonSerializer.SerializeAsync(fs, ce, s_serializerOptions);
 
                                                 return Optional.Some(Success.Create($"Configuration file successfully saved to '{_configurationLocation}'"));
                                             }
