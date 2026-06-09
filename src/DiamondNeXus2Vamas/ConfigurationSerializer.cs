@@ -1,6 +1,5 @@
 ﻿namespace DiamondNeXus2Vamas;
 
-using StreamExtensions;
 using Ultimately;
 using Ultimately.Async;
 using Ultimately.Collections;
@@ -33,7 +32,7 @@ public class ConfigurationSerializer(string configurationLocation)
     /// </summary>
     public Option<Configuration> Read()
     {
-        return _configurationLocation.SomeWhen(File.Exists, "Configuration file does not exist").Map(cl => Convert(JsonSerializer.Deserialize<ConfigurationEntity>(StreamExtensions.ReadAllBytes(cl), s_serializerOptions)!));
+        return _configurationLocation.SomeWhen(File.Exists, "Configuration file does not exist").Map(cl => Convert(JsonSerializer.Deserialize<ConfigurationEntity>(ReadAllBytes(cl), s_serializerOptions)!));
     }
 
     public async Task<Option> SaveAsync(Configuration? configuration)
@@ -77,4 +76,20 @@ public class ConfigurationSerializer(string configurationLocation)
     }
 
     private record ConfigurationEntity(string ConversionDefinitionFilePath);
+
+
+    private static byte[] ReadAllBytes(string path)
+    {
+        using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, bufferSize: 1, FileOptions.SequentialScan);
+        var bytes = new byte[fs.Length];
+        int index = 0, remaining = bytes.Length;
+        while (remaining > 0)
+        {
+            int n = fs.Read(bytes, index, remaining);
+            if (n == 0) throw new EndOfStreamException();
+            index += n;
+            remaining -= n;
+        }
+        return bytes;
+    }
 }
