@@ -12,7 +12,7 @@ public interface IScanFileReader
     /// </summary>
     /// <param name="scanFile">The scan file to read from.</param>
     Option<Scan> Read(ScanFile scanFile);
-    
+
     /// <summary>
     /// Reads a scan from a scan file located at the specified scan file path.
     /// </summary>

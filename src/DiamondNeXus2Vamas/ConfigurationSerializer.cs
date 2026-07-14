@@ -50,7 +50,7 @@ public class ConfigurationSerializer(string configurationLocation)
                                         try
                                         {
                                             await using var fs = new FileStream(_configurationLocation, FileMode.Create, FileAccess.Write, FileShare.Write, 4096, FileOptions.Asynchronous);
-                                            
+
                                             {
                                                 await JsonSerializer.SerializeAsync(fs, ce, s_serializerOptions);
 

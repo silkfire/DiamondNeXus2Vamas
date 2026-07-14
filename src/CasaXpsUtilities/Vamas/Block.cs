@@ -48,7 +48,7 @@ public class Block
     /// Gets the starting energy value.
     /// </summary>
     public double StartingEnergyValue { get; }
-    
+
     /// <summary>
     /// Gets the energy step (in <c>eV</c>).
     /// </summary>
