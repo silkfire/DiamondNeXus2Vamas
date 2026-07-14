@@ -28,13 +28,13 @@ public class NeXusReader : IScanFileReader
         var regions = new List<Region>();
 
         var entryName = $"/{BaseEntryName}1";
-        if (scan.GetGroupObjectData(entryName).Length == 0)
+        if (scan.GetGroupObjectData(entryName).Count == 0)
         {
             entryName = BaseEntryName;
         }
 
         var regionGroups = scan.GetGroupObjectData($"/{entryName}/instrument");
-        if (regionGroups.Length == 0)
+        if (regionGroups.Count == 0)
         {
             return Optional.None<Scan>("Failed to find any regions in scan file");
         }
@@ -59,7 +59,7 @@ public class NeXusReader : IScanFileReader
                                                                    d.RegionGroup,
                                                                    StartingEnergyValue = sev
                                                                }))
-                         
+
                      .FlatMap(d => d.RegionGroup.File.GetData<double>($"/{entryName}/instrument/{d.RegionGroup.Name}/image_data").SomeNotNull("Region must contain dataset 'image_data'")
                                                                                                                                  .Filter(id => id!.ChangeTime.HasValue, "Dataset 'image_data' does not specify a change time")
                                                                                                                                  .Map(id => new
@@ -109,7 +109,7 @@ public class NeXusReader : IScanFileReader
                                                                                                                                                d.ExcitationEnergy,
                                                                                                                                                StepTime = st
                                                                                                                                            }))
-                                  
+
                      // Energy step (energy_step)
 
                      .FlatMap(d => d.RegionGroup.File.GetData<double>($"/{entryName}/instrument/{d.RegionGroup.Name}/energy_step").SomeNotNull("Region must contain dataset 'energy_step'")
@@ -124,7 +124,7 @@ public class NeXusReader : IScanFileReader
                                                                                                                                                  d.StepTime,
                                                                                                                                                  EnergyStep = es
                                                                                                                                              }))
-                        
+
                      .FlatMap(d => Region.Create(d.RegionGroup.Name, d.CreationTimeUnix, d.StartingEnergyValue, d.ImageData, d.ExcitationEnergy, d.StepTime, d.EnergyStep))
                      .Match(
                             some: regions.Add,

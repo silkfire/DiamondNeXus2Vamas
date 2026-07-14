@@ -6,8 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LiteHDF.win-x64" Version="5.2.0" />
-    <PackageReference Include="NodaTime" Version="3.3.2" />
+    <None Remove="CasaXpsUtilities.csproj.DotSettings" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LiteHDF.win-x64" Version="6.0.0" />
+    <PackageReference Include="NodaTime" Version="3.3.3" />
     <PackageReference Include="Ultimately" Version="4.0.0" />
   </ItemGroup>
 
