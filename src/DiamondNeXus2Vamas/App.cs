@@ -72,7 +72,7 @@ try
         }
 
         // Move caret up one step and write on the previous line (due to the user having pressed ENTER - looks more neat)
-        // http://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html
+        // https://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html#cursor-navigation
 
         Console.Write("\e[1A");
     }
